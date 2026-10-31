@@ -1,0 +1,17 @@
+# data
+numpy
+pandas
+scipy
+
+# modeling and plotting
+scikit-learn
+matplotlib
+
+# LLM and literature search
+anthropic
+requests
+python-dotenv
+
+# notebooks and testing
+jupyter
+pytest

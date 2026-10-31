@@ -1,0 +1,17 @@
+# environment
+.venv/
+.env
+
+# python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# large data (keep folders, not files)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# mac
+.DS_Store
