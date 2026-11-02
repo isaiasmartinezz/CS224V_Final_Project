@@ -28,13 +28,13 @@ Every design decision, the alternatives considered, and why.
 
 ## 2026-11-02: Agent skeleton runs against a stand-in lab
 
-**Decision:** Until Ryan's `lab/sim_lab.py` and cleaned data exist, the agent runs against `agent/stand_in_lab.py`: the same methods and rules as `notes/interface.md`, the 38 real drug names, 39 fake cell lines (10 held out), and random scores. It lives in `agent/`, not `lab/`, so Ryan's folder is untouched.
+**Decision:** Until Ryan's `lab/sim_lab.py` and cleaned data exist, the agent runs against `agent/stub_lab.py`: the same methods and rules as `notes/interface.md`, the 38 real drug names, 39 fake cell lines (10 held out), and random scores. It lives in `agent/`, not `lab/`, so Ryan's folder is untouched.
 
 **Why:** Week 1 goal is a full 250-experiment loop end to end; the plan allows a random-score stand-in. Delete it once SimLab lands.
 
 ## 2026-11-02: Strong-combination flags are added after the run, outside the agent
 
-**Decision:** `run_agent` logs only what `lab.run()` returns. `experiments/run_skeleton.py` adds `is_strong_synergy` / `is_strong_inhibition` (top 5%) after the run finishes.
+**Decision:** `run_agent` logs only what `lab.run()` returns. `agent/agent.py` main() adds `is_strong_synergy` / `is_strong_inhibition` (top 5%) after the run finishes.
 
 **Why:** The thresholds come from all hidden results. Computing them inside the agent loop would leak information (plan Section 13). Needs agreement with Ryan on how SimLab exposes ground truth for evaluation only.
 

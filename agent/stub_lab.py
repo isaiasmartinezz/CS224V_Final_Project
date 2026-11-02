@@ -10,7 +10,7 @@ import pandas as pd
 DRUG_NAMES = Path("data/drug_names.txt")
 
 
-class StandInLab:
+class StubLab:
     def __init__(self, budget=250, n_lines=39, heldout_frac=0.25, seed=0):
         rng = np.random.default_rng(seed)
         drugs = [d.strip() for d in DRUG_NAMES.read_text().splitlines() if d.strip()]
