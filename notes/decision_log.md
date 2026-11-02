@@ -43,3 +43,13 @@ Every design decision, the alternatives considered, and why.
 **Decision:** Round 0 is chosen by `initial_batch` from its own random stream seeded by `seed`, independent of the chooser. Ryan's baselines should call the same function.
 
 **Why:** Plan Section 6 requires every method to start from the same random first batch per seed.
+
+## 2026-11-02: Finishing drug annotations (`data/finalize_drug_annotations.py`)
+
+**Decision:** Hand-written fields live in `data/finalize_drug_annotations.py`, which turns the draft into `data/drug_annotations.csv`.
+- `drug_class` restates a sourced field in plain words: the WHO ATC group (names fetched from ChEMBL's `atc_class` endpoint), the ChEMBL mechanism, or a cited paper. The source is written in `notes` for every row.
+- The 4 drugs with no ChEMBL mechanism get targets and mechanism from PubMed abstracts that name the drug, cited by PMID: GELDANAMYCIN (Hsp90), L778123 (FTase/GGTase-I), MK-4541 (SARM), MRK-003 (gamma-secretase / Notch). O'Neil 2016 was not used as a source.
+- Blank fields become "unknown"; a missing ATC code becomes "none" (the drug isn't WHO-classified, which is a fact, not a gap).
+- `status` is "needs sign-off" until Isaias reads each row and sets it to "done".
+
+**Why:** Keeps every manual choice visible, sourced, and re-runnable, and follows the "never guess" rule.

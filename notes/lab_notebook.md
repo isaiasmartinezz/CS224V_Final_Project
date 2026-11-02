@@ -35,3 +35,10 @@ Dated entries of what was run and what was learned.
 - Run logs in `results/` are NOT committed: they come from fake scores.
 
 **Next:** swap in Ryan's SimLab when ready; add an LLM chooser in the same slot as `random_chooser`; add PubMed retrieval with on-disk caching.
+
+## 2026-11-02: Drug annotations finalized (pending sign-off)
+
+**Ran:** `python data/finalize_drug_annotations.py` → `data/drug_annotations.csv` (38 rows, 13 columns).
+- All 38 drugs have SMILES, mechanism, targets, and `drug_class`, each with a source in `notes`.
+- Remaining unknowns: MK-4541 `chembl_id` (no confirmed ChEMBL record) and the `chembl_name` for MK-4541 and MRK-003 (ChEMBL records have no preferred name).
+- Still open: confirm drug spellings against Ryan's `oneil_clean.csv`; Isaias to read each row and set status to "done".
