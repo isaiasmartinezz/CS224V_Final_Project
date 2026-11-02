@@ -23,3 +23,15 @@ Dated entries of what was run and what was learned.
 - Fill `drug_class` (empty for all drugs right now).
 - Hand-review all 34 "check" rows.
 - Confirm drug name spellings against the actual O'Neil data once Ryan's pipeline loads it (plan Section 15).
+
+## 2026-11-02: Agent skeleton runs end to end
+
+**Built:** `agent/agent.py` (loop + random chooser), `agent/stand_in_lab.py` (temporary fake lab), `experiments/run_skeleton.py`, `tests/test_agent_skeleton.py`.
+
+**Ran:** `python experiments/run_skeleton.py --seeds 0 1 2 3 4` (about 2 seconds total).
+- Every seed: 250 experiments, 25 rounds of 10, budget reaches 0.
+- Strong finds (stand-in data, random chooser): synergy 11/15/13/13/15, inhibition 14/12/6/10/18. Chance level is 5% × 250 = 12.5, so this matches.
+- Tests pass: no repeated experiments, no overspending, no held-out lines, same first batch across choosers.
+- Run logs in `results/` are NOT committed: they come from fake scores.
+
+**Next:** swap in Ryan's SimLab when ready; add an LLM chooser in the same slot as `random_chooser`; add PubMed retrieval with on-disk caching.

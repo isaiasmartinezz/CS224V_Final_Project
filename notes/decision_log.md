@@ -25,3 +25,21 @@ Every design decision, the alternatives considered, and why.
 **Decision:** GELDANAMYCIN, L778123, MK-4541, and MRK-003 have no ChEMBL mechanism record. Their mechanism fields stay blank (to be marked "unknown" in the reviewed file) until we find a cited source. We do not fill them from memory or from the LLM.
 
 **Why:** Project rule: never guess biomedical facts. These are the obscure compounds that the famous-vs-obscure analysis (plan Section 9.4) depends on, so their sources matter.
+
+## 2026-11-02: Agent skeleton runs against a stand-in lab
+
+**Decision:** Until Ryan's `lab/sim_lab.py` and cleaned data exist, the agent runs against `agent/stand_in_lab.py`: the same methods and rules as `notes/interface.md`, the 38 real drug names, 39 fake cell lines (10 held out), and random scores. It lives in `agent/`, not `lab/`, so Ryan's folder is untouched.
+
+**Why:** Week 1 goal is a full 250-experiment loop end to end; the plan allows a random-score stand-in. Delete it once SimLab lands.
+
+## 2026-11-02: Strong-combination flags are added after the run, outside the agent
+
+**Decision:** `run_agent` logs only what `lab.run()` returns. `experiments/run_skeleton.py` adds `is_strong_synergy` / `is_strong_inhibition` (top 5%) after the run finishes.
+
+**Why:** The thresholds come from all hidden results. Computing them inside the agent loop would leak information (plan Section 13). Needs agreement with Ryan on how SimLab exposes ground truth for evaluation only.
+
+## 2026-11-02: Shared first batch via `agent.agent.initial_batch(candidates, seed, k)`
+
+**Decision:** Round 0 is chosen by `initial_batch` from its own random stream seeded by `seed`, independent of the chooser. Ryan's baselines should call the same function.
+
+**Why:** Plan Section 6 requires every method to start from the same random first batch per seed.
