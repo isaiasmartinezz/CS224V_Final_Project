@@ -23,4 +23,5 @@ Read `notes/milestones.md` for milestones and the week-by-week task checklist. W
 - Track tasks in `notes/milestones.md` (check boxes as done).
 - Done: environment, repo structure, interface doc, agent skeleton (`python -m agent.agent`, runs against `agent/stub_lab.py`), drug annotations (`data/drug_annotations.csv`), Week 1 Monday update.
 - Waiting: Isaias's hand sign-off on annotation rows; drug spellings vs Ryan's cleaned data; Ryan's `SimLab`.
-- Next (Week 2): PubMed retrieval with cache + excluded sources, then prompts.
+- Done (Nov 9): PubMed retrieval (`agent/retrieval.py`) with cache and exclusion list.
+- Next: prompts (`agent/prompts.py`), then hypothesis tracking and explanations.

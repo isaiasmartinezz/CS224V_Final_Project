@@ -42,3 +42,19 @@ Dated entries of what was run and what was learned.
 - All 38 drugs have SMILES, mechanism, targets, and `drug_class`, each with a source in `notes`.
 - Remaining unknowns: MK-4541 `chembl_id` (no confirmed ChEMBL record) and the `chembl_name` for MK-4541 and MRK-003 (ChEMBL records have no preferred name).
 - Still open: confirm drug spellings against Ryan's `oneil_clean.csv`; Isaias to read each row and set status to "done".
+
+## 2026-11-09: PubMed retrieval working
+
+**Built:** `agent/retrieval.py` (`search`, `evidence_for_drug`, `evidence_for_pair`, cache, exclusion filter), `agent/excluded_sources.txt`, `tests/test_retrieval.py` (8 offline tests with a fake PubMed).
+
+**Checked by hand** on 3 well-known pairs and 2 Merck compounds:
+- ABT-888 + carboplatin: veliparib PARP / synthetic-lethality papers; several veliparib + carboplatin trials for the pair.
+- Lapatinib + erlotinib: HER2/EGFR review chapters and drug profiles; pair results are ErbB-family reviews.
+- PD325901 + MK-2206: MEK and AKT inhibitor papers; pair results are MAPK + AKT co-inhibition studies.
+- MK-4541 + doxorubicin: both MK-4541 SARM papers found; no paper on the pair (expected).
+- MRK-003 + paclitaxel: 5 gamma-secretase / Notch papers; 2 papers on Notch inhibition with paclitaxel.
+- A fully cached repeat takes about 0.4 s, with no network calls.
+
+**Exclusion check:** a search designed to surface the O'Neil screen removed DeepTraSynergy (PMID 37467066) and a computational prediction platform (PMID 29483097), and kept the biology papers.
+
+**Known limitations:** a few off-topic hits remain for famous drugs (e.g. erlotinib in Alzheimer's models). The critique step should discount weak sources; SHELDON should improve this later.

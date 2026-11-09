@@ -57,11 +57,11 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 - [ ] 12:00 team meeting: ask open questions; record answers in `notes/decision_log.md` and update project plan Section 14
 
 **Tue Nov 3: Literature retrieval (placeholder until SHELDON)**
-- [ ] `agent/retrieval.py` with `search(query, max_results=10)` using PubMed E-utilities (esearch for IDs, efetch for title + abstract + year + DOI)
-- [ ] Cache every query and result to `data/cache/pubmed/` (JSON) so repeat runs don't re-download
-- [ ] `agent/excluded_sources.txt` listing O'Neil et al. 2016 (and any paper reporting its screen); filter these out of every result
-- [ ] Helper `evidence_for_pair(drug_a, drug_b)`: searches each drug's mechanism plus the pair together; returns a short list of sources with IDs
-- [ ] Quick test: run it on 3 well-known pairs and 2 Merck compounds; note what comes back in the lab notebook
+- [x] `agent/retrieval.py` with `search(query, max_results=10)` using PubMed E-utilities (esearch for IDs, efetch for title + abstract + year + DOI)
+- [x] Cache every query and result to `data/cache/pubmed/` (JSON) so repeat runs don't re-download
+- [x] `agent/excluded_sources.txt` listing O'Neil et al. 2016 (and any paper reporting its screen); filter these out of every result
+- [x] Helper `evidence_for_pair(drug_a, drug_b)`: searches each drug's mechanism plus the pair together; returns a short list of sources with IDs
+- [x] Quick test: run it on 3 well-known pairs and 2 Merck compounds; note what comes back in the lab notebook
 - **Done when:** retrieval returns sources for known drugs, uses the cache on repeat calls, and never returns excluded papers
 
 **Wed Nov 4: Prompts and structured outputs**

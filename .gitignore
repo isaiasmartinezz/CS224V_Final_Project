@@ -15,3 +15,6 @@ data/processed/*
 
 # mac
 .DS_Store
+
+# literature cache (rebuildable from queries)
+data/cache/

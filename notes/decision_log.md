@@ -53,3 +53,24 @@ Every design decision, the alternatives considered, and why.
 - `status` is "needs sign-off" until Isaias reads each row and sets it to "done".
 
 **Why:** Keeps every manual choice visible, sourced, and re-runnable, and follows the "never guess" rule.
+
+## 2026-11-09: PubMed retrieval design (`agent/retrieval.py`)
+
+**Decision:**
+- PubMed E-utilities (esearch + efetch), sorted by **relevance**. The API defaults to newest-first, which returned off-topic recent papers for well-studied drugs (e.g. erlotinib → a Chikungunya paper).
+- Single-drug mechanism search requires the drug name in the **title**, then tops up from abstract matches when fewer than 5 are found. Title-only cut the Merck compounds (MK-4541, MRK-003) to 1 paper each.
+- Drop papers with no abstract and repeated titles (the same review chapter appeared in 2010, 2014, and 2018 editions).
+- Drug names are searched as both the dataset name and the common name from `data/drug_annotations.csv` (e.g. ABT-888 OR veliparib).
+- Raw responses are cached in `data/cache/pubmed/` (gitignored; rebuildable). Exclusions are applied on every read, so editing the exclusion list never requires re-downloading.
+
+**Why:** Relevant, reproducible, free evidence until SHELDON access arrives.
+
+## 2026-11-09: Leakage exclusion list (`agent/excluded_sources.txt`)
+
+**Decision:** Two layers.
+1. Exact IDs: O'Neil 2016 (PMID 26983881, DOI 10.1158/1535-7163.MCT-15-0843, confirmed via PubMed).
+2. Text patterns on title + abstract: mentions of O'Neil, the Merck screen, or DrugComb, and computational synergy-prediction papers (e.g. "drug synergy prediction", "deep learning ... synergy").
+
+**Alternatives:** Hand-list every paper built on the O'Neil data. Not feasible: many ML papers use it, and their abstracts often don't name it (DeepSynergy says only "largest publicly available synergy dataset").
+
+**Why:** The agent needs mechanism biology, not other models' predictions, so dropping the whole category costs little. Patterns are kept tight: a looser "synergy ... predict" rule removed a biology paper (PMID 37491889) where a gene was "predictive of" combination response.
