@@ -65,19 +65,19 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 - **Done when:** retrieval returns sources for known drugs, uses the cache on repeat calls, and never returns excluded papers
 
 **Wed Nov 4: Prompts and structured outputs**
-- [ ] `agent/prompts.py` with three prompts:
+- [x] `agent/prompts.py` with three prompts:
   - **Hypothesize:** given drug annotations, cell line info, evidence, and results so far, propose hypotheses as JSON
   - **Critique:** challenge each hypothesis against evidence and observed results; keep, revise, or drop
   - **Select:** choose 10 exp_ids from the shortlist, each with a reason and the hypothesis it tests
-- [ ] Every LLM response is JSON validated in code; on bad output, retry once, then fall back to the model's top picks
-- [ ] Pick one LLM model for all runs; record the choice in `notes/decision_log.md`
-- **Done when:** each prompt returns valid JSON on a hand-made example
+- [x] Every LLM response is JSON validated in code; on bad output, retry once, then fall back to the model's top picks
+- [x] Pick one LLM model for all runs; record the choice in `notes/decision_log.md`
+- **Done when:** each prompt returns valid JSON on a hand-made example _(offline tests pass; live run `python experiments/try_prompts.py` waits on a real API key in `.env`)_
 
 **Thu Nov 5: Hypothesis tracking and explanations**
 - [ ] `agent/hypotheses.py`: store hypotheses with id, text, drugs, predicted responder cell lines, status (open / supported / refuted), and evidence IDs
 - [ ] After each batch, update statuses from the new results
 - [ ] `agent/explanations.py`: every flagged combination gets an explanation labeled mechanistic / cross-cancer / statistical; mechanistic ones must include predicted responder cell lines
-- [ ] Log every LLM call (prompt, response, model, tokens, cost) to `results/llm_logs/`
+- [x] Log every LLM call (prompt, response, model, tokens, cost) to `results/llm_logs/`
 - **Done when:** a test run produces hypotheses, status updates, and labeled explanations in the log
 
 **Fri Nov 6: Connect everything**

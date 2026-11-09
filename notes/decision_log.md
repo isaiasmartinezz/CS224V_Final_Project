@@ -74,3 +74,19 @@ Every design decision, the alternatives considered, and why.
 **Alternatives:** Hand-list every paper built on the O'Neil data. Not feasible: many ML papers use it, and their abstracts often don't name it (DeepSynergy says only "largest publicly available synergy dataset").
 
 **Why:** The agent needs mechanism biology, not other models' predictions, so dropping the whole category costs little. Patterns are kept tight: a looser "synergy ... predict" rule removed a biology paper (PMID 37491889) where a gene was "predictive of" combination response.
+
+## 2026-11-09: LLM model and call settings (`agent/prompts.py`)
+
+**Decision:** All agent runs use **Claude Opus 5.5 (`claude-opus-5-5`)** with adaptive thinking at effort **`high`**, set once as constants in `agent/prompts.py`.
+
+**Alternatives:** Sonnet 5.5 (half the price) or Opus 5.5 at the default `medium` effort. Either could be tested later as a cost ablation, but switching mid-project would make runs incomparable.
+
+**Why:** The hypothesize and critique steps are reasoning-heavy, which is where higher effort pays off. One fixed model keeps runs comparable (plan Section 12).
+
+**Refusal fallback:** Requests opt into the API's server-side fallback (`fallbacks: "default"`). If a safety classifier declines a request (cancer-drug content could occasionally trip the "bio" classifier), the API reruns it on Anthropic's recommended fallback model instead of stalling the run. This technically breaks "one model," so every call logs `model_served`; we report the fraction of fallback-served calls and can turn this off if the team prefers.
+
+## 2026-11-09: Structured outputs plus checks in code
+
+**Decision:** Each step uses structured outputs (a fixed JSON schema built from pydantic classes via `anthropic.transform_schema`). Code then checks what a schema can't express: cited IDs must be among the provided sources, drugs and cell lines must exist in the shortlist, mechanistic hypotheses must name predicted responders, critique gives one verdict per hypothesis, and select returns exactly k unique shortlist IDs. On failure: one retry with the problems listed, then hypothesize/critique return None and select falls back to the shortlist's top k (response-model order).
+
+**Why:** Catches invented citations and invalid picks before they reach the lab, and a run never stalls on a bad LLM answer.

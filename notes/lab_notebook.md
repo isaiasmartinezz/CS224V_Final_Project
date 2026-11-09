@@ -58,3 +58,11 @@ Dated entries of what was run and what was learned.
 **Exclusion check:** a search designed to surface the O'Neil screen removed DeepTraSynergy (PMID 37467066) and a computational prediction platform (PMID 29483097), and kept the biology papers.
 
 **Known limitations:** a few off-topic hits remain for famous drugs (e.g. erlotinib in Alzheimer's models). The critique step should discount weak sources; SHELDON should improve this later.
+
+## 2026-11-09: LLM prompts built (live check pending)
+
+**Built:** `agent/prompts.py` (hypothesize / critique / select, validation, one retry, fallback, per-call logging to `results/llm_logs/<run_id>.jsonl` with tokens and cost), `tests/test_prompts.py` (11 offline tests with a fake Claude), `experiments/try_prompts.py` (live smoke test on 3 real drug pairs with real retrieval).
+
+**Status:** All 24 tests pass. The live smoke test could not run: `ANTHROPIC_API_KEY` in `.env` is the README placeholder, not a real key.
+
+**Rough cost guess (unmeasured):** about 10–20k input tokens and 3–8k output tokens per call, so roughly $0.10–0.25 per call. At 3 calls × 25 rounds, that's about $8–19 per 250-experiment run. Measure from the smoke test and the first full run before planning seeds × ablations.
