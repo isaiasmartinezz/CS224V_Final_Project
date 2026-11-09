@@ -76,3 +76,23 @@ Dated entries of what was run and what was learned.
 **Run files:** `results/run_log_agent_seed<N>.csv` (LLM agent), `results/run_log_agent_random_seed<N>.csv` (skeleton), `results/hypotheses_<run_id>.json`, `results/llm_logs/<run_id>.jsonl`.
 
 **Blocked:** the real-LLM run (`python -m agent.agent --chooser llm`) waits on a real `ANTHROPIC_API_KEY` in `.env`; `SimLab` is not in the repo yet.
+
+## 2026-11-09: Backup lab built and first baseline comparison (real O'Neil data)
+
+**Built:** `backup_lab/` (fetch_oneil, clean_oneil, sim_lab, response_model, baselines, thresholds, run_baselines, compare), `agent/lab_source.py` (the LAB_SOURCE switch), agent shortlist now uses the response model, `tests/test_backup_lab.py`. 42/42 tests pass.
+
+**Data:** 92,208 raw O'Neil rows → 22,737 (pair, line) experiments: 583 pairs, 38 drugs, 39 lines, 6 tissues. 22,422 rows average 4 replicates, 315 average 8. 0 dropped. 16,907 visible to methods after holding out 10 lines.
+Held-out: A2780, HT29, KPL1, LOVO, NCIH23, NCIH520, RPMI7951, SKMEL30, UWB1289+BRCA1, ZR751.
+Strong cutoffs (top 5% / top 1%): synergy (ZIP) 11.84 / 19.00; inhibition (CSS) 81.89 / 90.59.
+
+**Baselines, 5 seeds, strong combinations found in 250 experiments (mean ± std):**
+
+| method | synergy top 5% | synergy top 1% | inhibition top 5% | inhibition top 1% |
+|---|---|---|---|---|
+| random | 12.2 ± 1.2 | 2.8 ± 0.7 | 12.8 ± 1.7 | 3.8 ± 0.7 |
+| uncertainty | 27.4 ± 12.5 | 9.6 ± 9.1 | 10.4 ± 7.3 | 3.2 ± 3.3 |
+| BO (UCB) | 65.2 ± 5.5 | 22.6 ± 3.6 | 112.0 ± 13.7 | 52.6 ± 11.5 |
+
+Random matches chance (12.5 expected). BO is a strong bar: ~5× random for synergy, ~9× for inhibition. Figures: `results/backup/figures/`.
+
+**Notes:** uncertainty sampling varies a lot by seed. Inhibition is much easier to find than synergy (it depends mostly on how potent each drug is in each line).

@@ -1,0 +1,4 @@
+method,seeds,strong_at_end_mean,strong_at_end_std,auc_mean,auc_std,experiments
+bo,5,65.2,5.455,0.118,0.02,250
+random,5,12.2,1.166,0.025,0.005,250
+uncertainty,5,27.4,12.452,0.051,0.015,250

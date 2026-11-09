@@ -37,9 +37,9 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 - **Done when:** a full 250-experiment run finishes and the log has 250 rows
 
 **[R] 3. Data, lab, random baseline**
-- [ ] `data/processed/oneil_clean.csv` and `heldout_lines.txt`
-- [ ] `lab/sim_lab.py` matching the interface
-- [ ] Random baseline run + first discovery curve in `results/`
+- [ ] `data/processed/oneil_clean.csv` and `heldout_lines.txt` _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [ ] `lab/sim_lab.py` matching the interface _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [ ] Random baseline run + first discovery curve in `results/` _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
 
 **[I] 4. Monday update (due noon)**
 - [x] Write `notes/weekly_updates/2026-11-02.md` using the template in project plan Section 17
@@ -81,8 +81,8 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 - **Done when:** a test run produces hypotheses, status updates, and labeled explanations in the log _(done with a fake Claude in `tests/test_agent_llm.py`; real-LLM run waits on API key)_
 
 **Fri Nov 6: Connect everything**
-- [ ] Swap `stub_lab` for Ryan's `SimLab` _(blocked: SimLab not in repo yet)_
-- [x] Shortlist step: use Ryan's response model to keep the top ~50 candidates; if the model isn't ready, shortlist randomly and note it _(random for now; TODO in `LLMChooser.shortlist`)_
+- [x] Swap `stub_lab` for Ryan's `SimLab` _(uses backup SimLab via LAB_SOURCE; `--lab ryan` once his lands)_
+- [x] Shortlist step: use Ryan's response model to keep the top ~50 candidates; if the model isn't ready, shortlist randomly and note it _(uses the backup response model; random only with the stub lab)_
 - [x] Full agent loop: shortlist → retrieve → hypothesize → critique → select → run → update
 - [ ] TA meeting: show the agent running; ask for feedback on prompts and evaluation
 - **Done when:** one seed runs all 250 experiments with real retrieval and explanations _(`python -m agent.agent --chooser llm`; waits on API key)_
@@ -101,12 +101,12 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 - One full agent run with real retrieval, its log, and a cost estimate
 
 ### Ryan: Week 2
-- [ ] Match cell lines to DepMap; save cell line features to `data/processed/`
-- [ ] Drug fingerprints from SMILES (RDKit) using `data/drug_annotations.csv`
-- [ ] `lab/response_model.py`: predicts both outcomes with uncertainty; retrains after each batch
-- [ ] `lab/baselines.py`: uncertainty sampling and Bayesian optimization
-- [ ] Discovery curves for all three baselines, 1 seed
-- [ ] Function to compute strong-combination thresholds (top 5% and top 1%)
+- [ ] Match cell lines to DepMap; save cell line features to `data/processed/` _(not in backup yet)_
+- [ ] Drug fingerprints from SMILES (RDKit) using `data/drug_annotations.csv` _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [ ] `lab/response_model.py`: predicts both outcomes with uncertainty; retrains after each batch _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [ ] `lab/baselines.py`: uncertainty sampling and Bayesian optimization _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [ ] Discovery curves for all three baselines, 1 seed _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [ ] Function to compute strong-combination thresholds (top 5% and top 1%) _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
 
 ---
 
@@ -119,8 +119,8 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 - [ ] Classify explanations by level; count mechanistic ones with valid predictions
 
 **[R]**
-- [ ] Run all three baselines: 5 seeds × both outcomes
-- [ ] `experiments/compare.py`: discovery curves (mean ± spread), strong combinations at 250, area under curve
+- [ ] Run all three baselines: 5 seeds × both outcomes _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [ ] `experiments/compare.py`: discovery curves (mean ± spread), strong combinations at 250, area under curve _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
 
 **[Both]**
 - [ ] Prepare Nov 16 review: results, what's working, what to cut or change

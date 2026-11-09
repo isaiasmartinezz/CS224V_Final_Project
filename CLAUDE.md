@@ -26,4 +26,5 @@ Read `notes/milestones.md` for milestones and the week-by-week task checklist. W
 - Done (Nov 9): PubMed retrieval (`agent/retrieval.py`) with cache and exclusion list.
 - Done (Nov 9): LLM prompts (`agent/prompts.py`), model = claude-opus-5-5; live check waits on a real API key in `.env`.
 - Done (Nov 9): hypothesis tracking, explanations, full LLM loop (`python -m agent.agent --chooser llm`), tested offline with a fake Claude.
+- Done (Nov 9): backup copy of Ryan's tasks in `backup_lab/` (real O'Neil data from DrugComb/Zenodo, SimLab, response model, baselines, curves). Switch with `LAB_SOURCE=backup|ryan|stub` in `.env` or `--lab`; results in `results/<source>/`.
 - Next: first real run once the API key is set; swap in SimLab when Ryan pushes it; Sat/Sun checks in milestones.

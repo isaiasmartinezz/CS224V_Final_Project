@@ -110,3 +110,29 @@ Every design decision, the alternatives considered, and why.
 **Decision:** `LLMChooser.shortlist` samples 50 candidates at random for now; literature is retrieved for the first 6 drug pairs on the shortlist (3 papers per query) to keep prompts affordable.
 
 **Why:** The milestone allows a random shortlist until Ryan's response model is ready. Note for analysis: with a random shortlist, any gain over the random baseline comes from the LLM alone.
+
+## 2026-11-09: Backup copy of Ryan's tasks, behind an on/off switch
+
+**Decision:** Isaias built working versions of Ryan's Week 1–2 tasks (data pipeline, held-out lines, SimLab, response model, baselines, thresholds, comparison plots) in a separate `backup_lab/` package with its data in `data/processed/backup/`. Nothing in Ryan's `lab/` or `data/processed/` is touched. `LAB_SOURCE` (in `.env`, or `--lab` per run) picks whose version every runner uses: `backup` (default), `ryan`, or `stub`. Results go to `results/<source>/` so the two versions never mix. Turning the backup off = `LAB_SOURCE=ryan`.
+
+**Why:** Unblocks the agent's first real runs without waiting, while keeping Ryan's work authoritative once it lands. Compare the two versions before switching (same row count, same held-out lines, same thresholds).
+
+## 2026-11-09: Data source = DrugComb v1.5 via Zenodo
+
+**Decision:** O'Neil rows (study_name ONEIL) are streamed from DrugComb v1.5 `summary_v_1_5.csv` on Zenodo (record 15235991); drugcomb.org refused connections on Nov 9. Inhibition = `css_ri` (checked: equals the mean of `css_row` and `css_col` for every row). All four synergy scores are kept; `synergy` = ZIP for now.
+
+**Name matching:** each DrugComb drug name was looked up in PubChem and its CID compared with `data/drug_annotations.csv`. 36/38 match exactly; carboplatin and oxaliplatin map to a different PubChem record of the same compound (same formula, common name in PubChem synonyms). Mapping and evidence in `backup_lab/clean_oneil.py`.
+
+**Open:** ZIP is provisional until the research team answers the synergy-score question (plan Section 14). Switch with `SYNERGY_METRIC=loewe|bliss|hsa` in `.env`; no rerun of cleaning needed.
+
+## 2026-11-09: Held-out lines (backup version)
+
+**Decision:** 10 of 39 lines, chosen once with seed 2026, spread across tissues by largest remainder: 2 each from breast, large intestine, lung, ovary, skin; 0 from prostate (only 2 lines). List committed at `data/processed/backup/heldout_lines.txt`. If Ryan's list differs, his wins when `LAB_SOURCE=ryan`.
+
+## 2026-11-09: Response model and baselines (backup version)
+
+**Decision:** Random forest (100 trees, max_features 0.3), retrained from scratch each round. Features: summed Morgan fingerprints of both drugs (radius 2, 256 bits, RDKit), summed ChEMBL target multi-hot, summed drug identity, cell line one-hot, tissue one-hot. Uncertainty = std across trees. Uncertainty sampling = top-k std; BO = top-k of mean + 1.0 × std (UCB, no batch diversity). The agent's shortlist uses the same model: 45 by UCB + 5 most uncertain, ordered by UCB, with pred_mean / pred_std / tissue shown to the LLM.
+
+**Why:** Simple, fast (~8 s per 250-experiment run), and gives honest uncertainty. kappa = 1.0 is untuned. DepMap genetics are not in the model yet.
+
+**Interface assumed for Ryan's model** (used when LAB_SOURCE=ryan): `ResponseModel(cell_lines, seed=)` with `fit(history, outcome)` and `predict(candidates) -> (mean, std)`. See `notes/interface.md`.

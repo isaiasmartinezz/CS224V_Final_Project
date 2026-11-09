@@ -60,6 +60,18 @@ A function `run_agent(lab, batch_size=10)` that:
 - Budget = 250 experiments per method
 - Batch size = 10 per round (25 rounds)
 
+## 5. Response model (proposed, so the agent can use either version)
+
+`ResponseModel(cell_lines, seed=0)` with:
+- `fit(history, outcome)`: trains on all results so far (`history` has drug_a, drug_b, cell_line, synergy, inhibition)
+- `predict(candidates)`: returns `(mean, std)` arrays, one value per candidate row
+
+## 6. Whose version runs: `LAB_SOURCE`
+
+Isaias built a backup of Ryan's pieces in `backup_lab/` (data in `data/processed/backup/`).
+`LAB_SOURCE` in `.env` (or `--lab` on any runner) picks: `backup` (default), `ryan` (`lab/` + `data/processed/`), or `stub` (fake lab).
+Results go to `results/<source>/`. Set `LAB_SOURCE=ryan` to turn the backup off.
+
 ## Open questions
 - Which synergy score? (ask research team)
 - Batch size 10 OK?

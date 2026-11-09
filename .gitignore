@@ -18,3 +18,12 @@ data/processed/*
 
 # literature cache (rebuildable from queries)
 data/cache/
+
+# backup copy of Ryan's data (only the held-out list is committed)
+!data/processed/backup/
+data/processed/backup/*
+!data/processed/backup/heldout_lines.txt
+
+# quick-check runs (skeleton + fake lab)
+results/stub/
+results/*/run_log_agent_random_*

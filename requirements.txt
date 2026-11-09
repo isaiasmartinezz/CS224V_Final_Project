@@ -5,6 +5,7 @@ scipy
 
 # modeling and plotting
 scikit-learn
+rdkit
 matplotlib
 
 # LLM and literature search
