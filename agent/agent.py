@@ -5,6 +5,7 @@ Usage: python -m agent.agent --seeds 0 1 2 3 4"""
 import argparse
 from pathlib import Path
 
+import anthropic
 import numpy as np
 import pandas as pd
 
@@ -25,6 +26,50 @@ def random_chooser(candidates, history, k, rng):
     """Returns (exp_ids, explanations). One explanation dict per pick."""
     picks = list(rng.choice(candidates["exp_id"].to_numpy(), size=k, replace=False))
     return picks, [{"explanation_level": "none", "explanation_text": "random pick"}] * k
+
+
+class LLMChooser:
+    """Each round: update hypothesis statuses, shortlist, retrieve evidence,
+    hypothesize -> critique -> select, and attach a labeled explanation to every pick."""
+
+    def __init__(self, run_id, outcome="synergy", shortlist_size=50, evidence_pairs=6,
+                 llm=None, retrieve=None):
+        from agent.hypotheses import HypothesisBook
+        from agent.prompts import LLM
+        from agent.retrieval import evidence_for_pair
+
+        self.llm = llm or LLM(run_id)
+        self.retrieve = retrieve or (lambda a, b: evidence_for_pair(a, b, per_query=3))
+        self.book = HypothesisBook()
+        self.outcome, self.shortlist_size, self.evidence_pairs = outcome, shortlist_size, evidence_pairs
+        ann = pd.read_csv("data/drug_annotations.csv", dtype=str).set_index("drug")
+        self.annotations = ann.to_dict("index")
+        self.round = 0
+
+    def shortlist(self, candidates, rng):
+        # TODO: rank by Ryan's response model (BO criterion) once lab/response_model.py exists.
+        # Until then the shortlist is a random sample, so any gain here comes from the LLM alone.
+        n = min(self.shortlist_size, len(candidates))
+        return candidates.iloc[rng.choice(len(candidates), size=n, replace=False)].reset_index(drop=True)
+
+    def __call__(self, candidates, history, k, rng):
+        from agent.explanations import explain
+        from agent.prompts import critique, hypothesize, select
+
+        self.round += 1
+        self.book.update(history, self.outcome, self.round)
+        short = self.shortlist(candidates, rng)
+        pairs = list(dict.fromkeys(zip(short["drug_a"], short["drug_b"])))[:self.evidence_pairs]
+        evidence = {f"{a} + {b}": self.retrieve(a, b) for a, b in pairs}
+
+        new = hypothesize(self.llm, short, self.annotations, evidence, history,
+                          list(self.book.items.values()), outcome=self.outcome)
+        self.book.add(new, self.round)
+        if self.book.active():
+            self.book.apply_critique(critique(self.llm, self.book.active(), evidence, history, self.outcome),
+                                     self.round)
+        picks = select(self.llm, short, self.book.active(), history, k=k, outcome=self.outcome)
+        return [p.exp_id for p in picks], [explain(p, self.book) for p in picks]
 
 
 def run_agent(lab, batch_size=10, chooser=random_chooser, seed=0):
@@ -64,14 +109,26 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--seeds", type=int, nargs="+", default=[0])
+    parser.add_argument("--chooser", choices=["random", "llm"], default="random",
+                        help="llm = full agent (needs ANTHROPIC_API_KEY); random = skeleton check")
+    parser.add_argument("--outcome", choices=["synergy", "inhibition"], default="synergy")
     args = parser.parse_args()
 
     Path("results").mkdir(exist_ok=True)
+    method = "agent" if args.chooser == "llm" else "agent_random"
     for seed in args.seeds:
         lab = StubLab(seed=0)  # same fake world every seed; only the agent's choices vary
-        log = run_agent(lab, seed=seed)
+        run_id = f"{method}_{args.outcome}_seed{seed}"
+        chooser = LLMChooser(run_id, outcome=args.outcome) if args.chooser == "llm" else random_chooser
+        try:
+            log = run_agent(lab, seed=seed, chooser=chooser)
+        except anthropic.AuthenticationError:
+            raise SystemExit("ANTHROPIC_API_KEY in .env is not a valid key. Add a real key and rerun.")
         log = add_strong_flags(log, lab._all_results())  # after the run, so the agent never sees it
-        out = Path("results") / f"run_log_agent_seed{seed}.csv"
+        if args.chooser == "llm":
+            chooser.book.save(Path("results") / f"hypotheses_{run_id}.json")
+            print(f"LLM cost: ${chooser.llm.total_cost:.2f}")
+        out = Path("results") / f"run_log_{method}_seed{seed}.csv"
         log.to_csv(out, index=False)
         print(f"seed {seed}: {len(log)} experiments, {log['round'].nunique()} rounds, "
               f"strong synergy {log['is_strong_synergy'].sum()}, "

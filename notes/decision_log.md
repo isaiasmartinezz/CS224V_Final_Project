@@ -90,3 +90,23 @@ Every design decision, the alternatives considered, and why.
 **Decision:** Each step uses structured outputs (a fixed JSON schema built from pydantic classes via `anthropic.transform_schema`). Code then checks what a schema can't express: cited IDs must be among the provided sources, drugs and cell lines must exist in the shortlist, mechanistic hypotheses must name predicted responders, critique gives one verdict per hypothesis, and select returns exactly k unique shortlist IDs. On failure: one retry with the problems listed, then hypothesize/critique return None and select falls back to the shortlist's top k (response-model order).
 
 **Why:** Catches invented citations and invalid picks before they reach the lab, and a run never stalls on a bad LLM answer.
+
+## 2026-11-09: Hypothesis status rule (`agent/hypotheses.py`)
+
+**Decision:** After each batch, every active hypothesis is re-scored using only results the lab has returned. Each observed experiment gets its percentile rank among all experiments run so far, and a hypothesis's score is the mean percentile of the experiments it covers (one-drug hypothesis: any pair with that drug; multi-drug: both drugs in its set). Status: fewer than 2 covered experiments → open; score ≥ 0.65 → supported; ≤ 0.35 → refuted; otherwise open. Mechanistic hypotheses also record `responder_gap` (predicted responder lines vs other lines), which feeds the held-out mechanism test later.
+
+**Alternatives:** Compare against the top-5% "strong" threshold. Rejected: the threshold comes from hidden results (leakage, plan Section 13).
+
+**Why:** Simple, transparent, and leak-free. The cutoffs (2 tests, 0.65 / 0.35) are untuned starting values to revisit after the first real runs.
+
+## 2026-11-09: Explanations downgrade unsupported "mechanistic" labels
+
+**Decision:** A pick labeled mechanistic whose hypothesis names no predicted responder lines, or an "explore" pick, is logged as statistical.
+
+**Why:** Plan Section 8.3 requires every mechanistic explanation to carry a testable cell-line prediction; this enforces it in code rather than trusting the label.
+
+## 2026-11-09: Random shortlist until the response model exists
+
+**Decision:** `LLMChooser.shortlist` samples 50 candidates at random for now; literature is retrieved for the first 6 drug pairs on the shortlist (3 papers per query) to keep prompts affordable.
+
+**Why:** The milestone allows a random shortlist until Ryan's response model is ready. Note for analysis: with a random shortlist, any gain over the random baseline comes from the LLM alone.

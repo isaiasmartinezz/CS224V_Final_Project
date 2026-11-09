@@ -74,18 +74,18 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 - **Done when:** each prompt returns valid JSON on a hand-made example _(offline tests pass; live run `python experiments/try_prompts.py` waits on a real API key in `.env`)_
 
 **Thu Nov 5: Hypothesis tracking and explanations**
-- [ ] `agent/hypotheses.py`: store hypotheses with id, text, drugs, predicted responder cell lines, status (open / supported / refuted), and evidence IDs
-- [ ] After each batch, update statuses from the new results
-- [ ] `agent/explanations.py`: every flagged combination gets an explanation labeled mechanistic / cross-cancer / statistical; mechanistic ones must include predicted responder cell lines
+- [x] `agent/hypotheses.py`: store hypotheses with id, text, drugs, predicted responder cell lines, status (open / supported / refuted), and evidence IDs
+- [x] After each batch, update statuses from the new results
+- [x] `agent/explanations.py`: every flagged combination gets an explanation labeled mechanistic / cross-cancer / statistical; mechanistic ones must include predicted responder cell lines
 - [x] Log every LLM call (prompt, response, model, tokens, cost) to `results/llm_logs/`
-- **Done when:** a test run produces hypotheses, status updates, and labeled explanations in the log
+- **Done when:** a test run produces hypotheses, status updates, and labeled explanations in the log _(done with a fake Claude in `tests/test_agent_llm.py`; real-LLM run waits on API key)_
 
 **Fri Nov 6: Connect everything**
-- [ ] Swap `stub_lab` for Ryan's `SimLab`
-- [ ] Shortlist step: use Ryan's response model to keep the top ~50 candidates; if the model isn't ready, shortlist randomly and note it
-- [ ] Full agent loop: shortlist → retrieve → hypothesize → critique → select → run → update
+- [ ] Swap `stub_lab` for Ryan's `SimLab` _(blocked: SimLab not in repo yet)_
+- [x] Shortlist step: use Ryan's response model to keep the top ~50 candidates; if the model isn't ready, shortlist randomly and note it _(random for now; TODO in `LLMChooser.shortlist`)_
+- [x] Full agent loop: shortlist → retrieve → hypothesize → critique → select → run → update
 - [ ] TA meeting: show the agent running; ask for feedback on prompts and evaluation
-- **Done when:** one seed runs all 250 experiments with real retrieval and explanations
+- **Done when:** one seed runs all 250 experiments with real retrieval and explanations _(`python -m agent.agent --chooser llm`; waits on API key)_
 
 **Sat Nov 7 to Sun Nov 8: Check and document**
 - [ ] Sanity checks: no exp_id run twice; no held-out cell lines in candidates; no excluded papers in any retrieved evidence

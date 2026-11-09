@@ -66,3 +66,13 @@ Dated entries of what was run and what was learned.
 **Status:** All 24 tests pass. The live smoke test could not run: `ANTHROPIC_API_KEY` in `.env` is the README placeholder, not a real key.
 
 **Rough cost guess (unmeasured):** about 10–20k input tokens and 3–8k output tokens per call, so roughly $0.10–0.25 per call. At 3 calls × 25 rounds, that's about $8–19 per 250-experiment run. Measure from the smoke test and the first full run before planning seeds × ablations.
+
+## 2026-11-09: Hypothesis tracking, explanations, and full LLM agent loop
+
+**Built:** `agent/hypotheses.py` (HypothesisBook: add, critique verdicts, status updates, save), `agent/explanations.py`, `LLMChooser` in `agent/agent.py` (shortlist → retrieve → hypothesize → critique → select → explain), `--chooser llm` and `--outcome` flags, `tests/test_agent_llm.py`.
+
+**Checked (offline, fake Claude):** a full 250-experiment run logs a hypothesis ID, a labeled explanation, and source IDs on every agent pick; hypothesis statuses change as results arrive; 72 LLM calls are logged (3 per round, rounds 1–24); no prompt mentions thresholds or strong flags. 30/30 tests pass.
+
+**Run files:** `results/run_log_agent_seed<N>.csv` (LLM agent), `results/run_log_agent_random_seed<N>.csv` (skeleton), `results/hypotheses_<run_id>.json`, `results/llm_logs/<run_id>.jsonl`.
+
+**Blocked:** the real-LLM run (`python -m agent.agent --chooser llm`) waits on a real `ANTHROPIC_API_KEY` in `.env`; `SimLab` is not in the repo yet.
