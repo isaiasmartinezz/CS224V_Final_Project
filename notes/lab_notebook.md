@@ -139,3 +139,15 @@ Strong combinations found in 250 experiments, 5 seeds, mean ± std. Chance ≈ 1
 **Sanity checks:** 75 run logs, 401 papers returned from cached searches (3 excluded papers in the raw cache, all filtered out), all pass.
 
 **Still blocked on the API key:** steps 3–4 of the ladder (agent without / with literature), the other ablations, the mechanism test, reading explanations, real cost.
+
+## 2026-11-13: First real agent runs (Sonnet 5.5, seed 0, joint target)
+
+Smoke test ($0.07) passed: valid hypothesize/critique/select output; critique correctly flagged claims the cited abstracts did not support.
+
+Strong combinations found in 250 (primary definition; seed 0; baselines' 5-seed mean in brackets): random 11 [10.6], uncertainty 16 [15.4], random-from-shortlist 62 [45.2], BO 40 [47.2], **Statistics + LLM (no literature) 73**, **Statistics + LLM + literature 60**.
+
+- On this seed the no-literature agent beat every baseline; the literature agent roughly tied the shortlist control (which had a high draw). One run per arm: promising, not conclusive.
+- Held-out mechanism test (exploratory): literature agent 32 predictions, precision 0.75 vs 0.50 by guessing (gap +0.15); no-literature agent 26 predictions, precision 0.61 (gap +0.04). Hypotheses overlap, so the permutation p-values are optimistic.
+- Costs $8.04 + $5.77 (+ $0.07 smoke) = $13.88. Retries 8 and 3; 10 literature-agent picks fell back to BO order after two invalid selects.
+- Sanity checks pass on all 160 real LLM calls (no held-out line names outside the held-out step, no evaluation words).
+- Summary for slides: `notes/meeting_2026-11-13_results.md`; figures `results/backup/figures/ladder_seed0.png`, `discovery_seed0.png`.

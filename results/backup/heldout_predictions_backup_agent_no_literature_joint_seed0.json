@@ -1,0 +1,247 @@
+{
+ "drug_codes": null,
+ "predictions": [
+  {
+   "hypothesis_id": "H8",
+   "predicted_responders": [
+    "A2780",
+    "HT29",
+    "NCIH520",
+    "UWB1289+BRCA1",
+    "ZR751",
+    "LOVO"
+   ],
+   "reason": "PI3K-pathway lesions (PIK3CA mutation in A2780/HT29, PIK3CA amplification in NCIH520/UWB1289, PTEN L108R in ZR751, PIK3CB E1051K in LOVO) should favor vertical PI3K/mTOR blockade, though the pair was active even in lesion-free lines (general pharmacology, uncited)."
+  },
+  {
+   "hypothesis_id": "H20",
+   "predicted_responders": [
+    "A2780",
+    "HT29",
+    "NCIH520",
+    "UWB1289+BRCA1",
+    "ZR751",
+    "LOVO",
+    "NCIH23"
+   ],
+   "reason": "The pair is active broadly, so lines with PI3K-axis lesions plus NCIH23 (STK11 loss, mTORC1 derepression) should respond to vertical blockade."
+  },
+  {
+   "hypothesis_id": "H28",
+   "predicted_responders": [
+    "NCIH23",
+    "A2780",
+    "ZR751"
+   ],
+   "reason": "NCIH23 shares KRAS G12C and STK11 loss with NCIH2122, the one responding line, and A2780 and ZR751 carry PI3K-axis lesions that may add dependence on AKT-mediated survival after mitomycin."
+  },
+  {
+   "hypothesis_id": "H33",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "RPMI7951",
+    "SKMEL30",
+    "NCIH520",
+    "UWB1289+BRCA1"
+   ],
+   "reason": "TP53-mutant lines (HT29, NCIH23, RPMI7951, SKMEL30, NCIH520, UWB1289) lack G1 arrest and should depend on the WEE1-controlled G2/M checkpoint after mitomycin crosslinks."
+  },
+  {
+   "hypothesis_id": "H37",
+   "predicted_responders": [
+    "NCIH23",
+    "HT29",
+    "LOVO"
+   ],
+   "reason": "KRAS-mutant NCIH23 and LOVO and PI3K-mutant HT29 resemble the KRAS/STK11 NCIH2122 responder, but evidence is moderate."
+  },
+  {
+   "hypothesis_id": "H40",
+   "predicted_responders": [
+    "NCIH23",
+    "LOVO"
+   ],
+   "reason": "NCIH23 resembles responder NCIH2122 (KRAS G12C, STK11 loss), and MSI LOVO has repair-gene frameshifts that may increase crosslink sensitivity, but evidence is thin."
+  },
+  {
+   "hypothesis_id": "H43",
+   "predicted_responders": [
+    "UWB1289+BRCA1",
+    "LOVO"
+   ],
+   "reason": "LOVO is MSI with repair-pathway defects like LNCAP, and UWB1289 has TP53 and NF1 loss with an engineered BRCA1 background, so some repair dependence is plausible, though evidence is weak."
+  },
+  {
+   "hypothesis_id": "H71",
+   "predicted_responders": [
+    "NCIH23",
+    "A2780",
+    "ZR751",
+    "NCIH520"
+   ],
+   "reason": "NCIH23 has STK11 loss that derepresses mTORC1 like NCIH2122, and A2780, ZR751 and NCIH520 carry PI3K-axis lesions that favor combined PI3K/mTOR and AKT blockade."
+  },
+  {
+   "hypothesis_id": "H72",
+   "predicted_responders": [
+    "NCIH23",
+    "HT29",
+    "LOVO",
+    "SKMEL30",
+    "RPMI7951"
+   ],
+   "reason": "KRAS G12C NCIH23, KRAS G13D LOVO and BRAF-mutant HT29, RPMI7951 and SKMEL30 have MAPK-driven signaling that pairs with PI3K/mTOR blockade to limit feedback."
+  },
+  {
+   "hypothesis_id": "H79",
+   "predicted_responders": [
+    "A2780",
+    "ZR751",
+    "UWB1289+BRCA1",
+    "NCIH520"
+   ],
+   "reason": "PIK3CA mutation or amplification (A2780, UWB1289, NCIH520) and PTEN L108R (ZR751) imply PI3K-AKT dependence like OVCAR3 and LNCAP."
+  },
+  {
+   "hypothesis_id": "H82",
+   "predicted_responders": [
+    "NCIH23",
+    "LOVO",
+    "A2780"
+   ],
+   "reason": "This breadth test is weakly supported, and NCIH23 (like NCIH2122) and chromatin-regulator-mutant LOVO and A2780 (ARID1A, SMARCA4) may be sensitive to HDAC inhibition combined with crosslinks."
+  },
+  {
+   "hypothesis_id": "H85",
+   "predicted_responders": [
+    "NCIH23",
+    "NCIH520"
+   ],
+   "reason": "As lung lines, NCIH23 (matching the NCIH2122 KRAS/STK11 genotype) and NCIH520 are the closest extensions of the lung-line response, but evidence is thin."
+  },
+  {
+   "hypothesis_id": "H86",
+   "predicted_responders": [
+    "NCIH23",
+    "A2780"
+   ],
+   "reason": "NCIH23 shares STK11 loss and TP53 mutation with NCIH2122, and A2780 has PIK3CA E365K, so PI3K/mTOR inhibition may lower survival after anthracycline damage."
+  },
+  {
+   "hypothesis_id": "H87",
+   "predicted_responders": [
+    "NCIH23"
+   ],
+   "reason": "NCIH23 shares KRAS G12C with SW837 and STK11 loss, so mTORC1 inhibition may reduce repair and survival proteins after mitomycin, but evidence is thin."
+  },
+  {
+   "hypothesis_id": "H90",
+   "predicted_responders": [
+    "NCIH520",
+    "UWB1289+BRCA1",
+    "A2780"
+   ],
+   "reason": "PIK3CA amplification (NCIH520, UWB1289) or mutation (A2780) makes PI3K/mTOR dependence similar to OVCAR3, so BEZ-235 plus HDAC inhibition may limit RTK feedback."
+  },
+  {
+   "hypothesis_id": "H91",
+   "predicted_responders": [
+    "A2780",
+    "LOVO"
+   ],
+   "reason": "A2780 and LOVO have chromatin or repair-gene lesions (ARID1A, SMARCA4, MSI) like LNCAP, which may leave them dependent on survival signaling after mitomycin."
+  },
+  {
+   "hypothesis_id": "H92",
+   "predicted_responders": [
+    "NCIH23",
+    "LOVO",
+    "ZR751"
+   ],
+   "reason": "RAS-activated lines (KRAS G12C NCIH23, KRAS G13D LOVO) and PTEN-altered ZR751 may rely on prenylated RAS/RHO feedback after PI3K/mTOR blockade, though effects are modest."
+  },
+  {
+   "hypothesis_id": "H94",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "RPMI7951",
+    "SKMEL30"
+   ],
+   "reason": "TP53-mutant lines depend on G2/M arrest, so WEE1 inhibition with mitomycin should cause premature mitosis, with the near-zero HCT116 prediction suggesting a weak effect in TP53-wild-type lines."
+  },
+  {
+   "hypothesis_id": "H96",
+   "predicted_responders": [
+    "NCIH23",
+    "A2780"
+   ],
+   "reason": "The single NCIH2122 observation suggests STK11-loss NCIH23 and PIK3CA-mutant A2780 may rely on AKT survival signaling after mitomycin."
+  },
+  {
+   "hypothesis_id": "H97",
+   "predicted_responders": [
+    "NCIH23",
+    "UWB1289+BRCA1",
+    "LOVO"
+   ],
+   "reason": "RAS-activated lines (KRAS G12C NCIH23, KRAS G13D LOVO, NF1 loss UWB1289) mirror SKMES1 NF1 loss, where prenylation blockade may blunt RAS-driven feedback."
+  },
+  {
+   "hypothesis_id": "H98",
+   "predicted_responders": [
+    "UWB1289+BRCA1",
+    "A2780",
+    "HT29",
+    "NCIH520"
+   ],
+   "reason": "TP53-mutant lines with PI3K-axis lesions (UWB1289, NCIH520, HT29) and A2780 resemble OVCAR3, being reliant on G2/M checkpoint and PI3K/mTOR signaling."
+  },
+  {
+   "hypothesis_id": "H99",
+   "predicted_responders": [
+    "LOVO",
+    "HT29"
+   ],
+   "reason": "Colorectal lines like HCT116, with PI3K-axis lesions (HT29, LOVO), may be sensitized by CDK9-mediated loss of repair proteins, though the prior is mixed."
+  },
+  {
+   "hypothesis_id": "H100",
+   "predicted_responders": [
+    "HT29",
+    "LOVO",
+    "A2780"
+   ],
+   "reason": "HT29 (PIK3CA P449T, BRAF V600E) and LOVO (PIK3CB E1051K) are colorectal lines resembling RKO and HCT116, and A2780 has PIK3CA E365K plus replication-stress-prone chromatin defects."
+  },
+  {
+   "hypothesis_id": "H101",
+   "predicted_responders": [
+    "HT29",
+    "LOVO",
+    "A2780"
+   ],
+   "reason": "PI3K-mutant colorectal and ovarian lines like HCT116 may be inhibited by BEZ-235, and HDAC inhibition may reduce RTK feedback escape."
+  },
+  {
+   "hypothesis_id": "H104",
+   "predicted_responders": [
+    "ZR751",
+    "HT29",
+    "A2780"
+   ],
+   "reason": "PI3K-axis lesions (PTEN L108R in ZR751, PIK3CA mutation in HT29 and A2780) suggest RTK feedback relief to AKT, which EGFR blockade may limit."
+  },
+  {
+   "hypothesis_id": "H105",
+   "predicted_responders": [
+    "HT29",
+    "RPMI7951",
+    "SKMEL30",
+    "LOVO"
+   ],
+   "reason": "HT29 and RPMI7951 carry BRAF V600E with PI3K-axis contributions like RKO, and KRAS G13D LOVO resembles HCT116, so dual MEK and PI3K/mTOR blockade is plausible."
+  }
+ ]
+}

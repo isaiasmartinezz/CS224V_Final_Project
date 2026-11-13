@@ -28,7 +28,7 @@ def main():
     shortlist = shortlist.iloc[3:]
 
     ann = pd.read_csv("data/drug_annotations.csv", dtype=str).set_index("drug").to_dict("index")
-    evidence = {f"{a} + {b}": evidence_for_pair(a, b, per_query=3) for a, b in PAIRS}
+    evidence = {f"{a} + {b}": evidence_for_pair(a, b, per_query=2) for a, b in PAIRS}
 
     llm = LLM("smoke_test")
     try:

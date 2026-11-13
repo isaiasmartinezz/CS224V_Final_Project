@@ -59,13 +59,13 @@ def test_valid_hypotheses_pass_and_are_logged():
     out, fake, llm = run_hypothesize(reply({"hypotheses": [hyp()]}))
     assert [h.id for h in out] == ["H1"]
     log = [json.loads(l) for l in llm.log_path.read_text().splitlines()]
-    assert len(log) == 1 and log[0]["problems"] == [] and log[0]["cost_usd"] == pytest.approx(0.014)
+    assert len(log) == 1 and log[0]["problems"] == [] and log[0]["cost_usd"] == pytest.approx(0.014 * prompts.PRICE["input"] / 4e-6)  # 0.014 at Opus prices
 
 
 def test_request_uses_fixed_model_schema_and_fallback():
     _, fake, _ = run_hypothesize(reply({"hypotheses": [hyp()]}))
     req = fake.requests[0]
-    assert req["model"] == "claude-opus-5-5" and req["output_config"]["effort"] == "high"
+    assert req["model"] == prompts.MODEL and req["output_config"]["effort"] == prompts.EFFORT
     assert req["output_config"]["format"]["schema"]["additionalProperties"] is False
     assert req["fallbacks"] == "default" and req["betas"] == ["server-side-fallback-2026-07-01"]
 

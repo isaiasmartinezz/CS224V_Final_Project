@@ -194,3 +194,9 @@ Familiarity = PubMed papers naming the drug (title/abstract, same query as retri
 ## 2026-11-13: BO tuning on separate seeds
 
 kappa (UCB exploration weight) is tuned on seeds 100–104 (`results/backup/tuning/`), never on the reporting seeds 0–4, so the reported comparison isn't tuned to its own test.
+
+## 2026-11-13: Agent model = Sonnet 5.5, effort medium, trimmed literature (budget)
+
+**Decision:** Budget for the whole study is < $30. Opus 5.5 at high effort was estimated at $5–11 per run. The agent now uses `claude-sonnet-5-5` ($2 / $10 per M tokens) at effort `medium`, with literature trimmed to 3 drug pairs × 2 papers per search per round (was 6 × 3). Override with `AGENT_MODEL` / `AGENT_EFFORT` in `.env`. Prices per model live in `agent/prompts.py`.
+
+**Observed:** real runs cost $5.77 (no literature) and $8.04 (with literature), more than estimated, because the hypothesis list is never pruned (100+ by the end; prompts grow ~12k → ~43k tokens; critique re-judges all of them each round and is the most expensive step). **Next:** cap active hypotheses (~10–15) and critique only new/recently tested ones before running more seeds; let critique see papers cited in earlier rounds (most retries were it citing an earlier-round paper).

@@ -19,12 +19,23 @@ from pydantic import BaseModel, ConfigDict, ValidationError
 
 load_dotenv()
 
-# One fixed model for all agent runs (plan Section 12; see notes/decision_log.md)
-MODEL = "claude-opus-5-5"
-EFFORT = "high"  # reasoning-heavy; Opus 5.5 defaults to "medium" if unset
+# One fixed model for all agent runs (plan Section 12; see notes/decision_log.md).
+# Nov 13: Sonnet 5.5 at medium effort to keep the whole study under $30. Override with
+# AGENT_MODEL / AGENT_EFFORT in .env (e.g. claude-opus-5-5 / high).
+import os as _os
+
+MODEL = _os.getenv("AGENT_MODEL", "claude-sonnet-5-5")
+EFFORT = _os.getenv("AGENT_EFFORT", "medium")
 MAX_TOKENS = 16000
-# Opus 5.5 list prices, USD per token. A fallback-served call is priced approximately.
-PRICE = {"input": 4e-6, "output": 20e-6, "cache_read": 0.2e-6, "cache_write": 5e-6}
+# List prices, USD per token (claude-api skill table, cached 2026-11-03). Thinking is billed as output.
+# Cache writes ~1.25x input, cache reads 0.1x input (Haiku: prompts <= 100K tokens).
+_PRICES = {
+    "claude-opus-5-5": (4e-6, 20e-6),
+    "claude-sonnet-5-5": (2e-6, 10e-6),
+    "claude-haiku-5-5": (0.1e-6, 0.5e-6),
+}
+_inp, _out = _PRICES.get(MODEL, _PRICES["claude-opus-5-5"])
+PRICE = {"input": _inp, "output": _out, "cache_read": 0.1 * _inp, "cache_write": 1.25 * _inp}
 LOG_DIR = Path("results/llm_logs")
 ABSTRACT_CHARS = 700  # enough for the key finding; keeps prompts affordable
 

@@ -28,5 +28,6 @@ Read `notes/milestones.md` for milestones and the week-by-week task checklist. W
 - Done (Nov 9): backup copy of Ryan's tasks in `backup_lab/` (real O'Neil data from DrugComb/Zenodo, SimLab, response model, baselines, curves). Switch with `LAB_SOURCE=backup|ryan|stub` in `.env` or `--lab`; results in `results/<source>/`.
 - Done (Nov 13): definitions locked with the research team: Loewe synergy (Bliss check), CSS inhibition, strong = joint cutoff ranked within each cell line (`backup_lab/thresholds.py`). Baselines rerun.
 - Done (Nov 13): cell-line genetics (Cell Model Passports), joint target, shortlist_random control, ablations, held-out mechanism test, famous/obscure split, model check, BO tuning (kappa 1), final baselines (BO 47.2, shortlist_random 45.2, random 10.6 on the primary definition), sanity checks, cost estimate.
-- Pending decision: agent model for the budget (< $30). Leaning Sonnet 5.5, medium effort, trimmed literature; one run of each LLM arm.
+- Done (Nov 13): agent on Sonnet 5.5 (medium effort, trimmed literature). First real runs, seed 0: LLM without literature 73, with literature 60, BO 40, shortlist-random 62, random 11. Spend $13.88. Results: `notes/meeting_2026-11-13_results.md`.
+- Next: cap active hypotheses (cost), then 5 seeds of both agent arms, then ablations.
 - Next: first real run once the API key is set; Sat/Sun checks in milestones.

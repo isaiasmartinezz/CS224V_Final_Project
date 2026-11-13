@@ -77,7 +77,7 @@ class LLMChooser:
     ablation: none | no_literature | no_critique | masked_names (plan 9.2).
     line_info: {cell_line: short genetics summary} shown to the LLM (public metadata, not results)."""
 
-    def __init__(self, run_id, outcome="synergy", shortlist_size=50, evidence_pairs=6,
+    def __init__(self, run_id, outcome="synergy", shortlist_size=50, evidence_pairs=3,
                  llm=None, retrieve=None, model=None, tissue=None, explore_frac=0.1, kappa=1.0,
                  ablation="none", line_info=None):
         from agent.hypotheses import HypothesisBook
@@ -86,7 +86,7 @@ class LLMChooser:
 
         assert ablation in ABLATIONS, ablation
         self.llm = llm or LLM(run_id)
-        self.retrieve = retrieve or (lambda a, b: evidence_for_pair(a, b, per_query=3))
+        self.retrieve = retrieve or (lambda a, b: evidence_for_pair(a, b, per_query=2))  # trimmed Nov 13 for budget
         self.book = HypothesisBook()
         self.outcome, self.shortlist_size, self.evidence_pairs = outcome, shortlist_size, evidence_pairs
         self.model, self.tissue, self.explore_frac, self.kappa = model, tissue or {}, explore_frac, kappa

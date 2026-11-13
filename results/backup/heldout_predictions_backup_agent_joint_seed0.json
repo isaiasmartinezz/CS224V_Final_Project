@@ -1,0 +1,330 @@
+{
+ "drug_codes": null,
+ "predictions": [
+  {
+   "hypothesis_id": "H1",
+   "predicted_responders": [
+    "UWB1289+BRCA1",
+    "NCIH520"
+   ],
+   "reason": "UWB1289+BRCA1 and NCIH520 both have PIK3CA amplification, so they are the lines most dependent on PI3K, though the HSP90 link is general pharmacology and thin."
+  },
+  {
+   "hypothesis_id": "H8",
+   "predicted_responders": [
+    "UWB1289+BRCA1",
+    "ZR751"
+   ],
+   "reason": "PIK3CA amplification in UWB1289+BRCA1 and PTEN L108R in ZR751 raise PI3K dependence, which could make cells reliant on PI3K/mTOR for gemcitabine replication-stress tolerance."
+  },
+  {
+   "hypothesis_id": "H10",
+   "predicted_responders": [
+    "ZR751",
+    "UWB1289+BRCA1"
+   ],
+   "reason": "PTEN L108R in ZR751 and PIK3CA amplification with NF1 loss in UWB1289+BRCA1 make AKT-dependent signalling likely, but BEZ-235 plus MK-2206 may be only additive."
+  },
+  {
+   "hypothesis_id": "H21",
+   "predicted_responders": [
+    "ZR751",
+    "UWB1289+BRCA1"
+   ],
+   "reason": "PTEN-mutant ZR751 and PIK3CA-amplified UWB1289+BRCA1 are PI3K-driven, so HDAC inhibition could block the feedback survival re-engaged by BEZ-235."
+  },
+  {
+   "hypothesis_id": "H31",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "RPMI7951",
+    "SKMEL30",
+    "UWB1289+BRCA1",
+    "NCIH520"
+   ],
+   "reason": "These lines carry TP53 or CDKN2A lesions and lack a G1 checkpoint, which should increase dependence on WEE1 under gemcitabine replication stress."
+  },
+  {
+   "hypothesis_id": "H33",
+   "predicted_responders": [],
+   "reason": "No tested line has a strong AKT-dependence plus WEE1 rationale beyond weak PIK3CA/TP53 signals, and the model predicts near zero for this pair."
+  },
+  {
+   "hypothesis_id": "H41",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "NCIH520",
+    "UWB1289+BRCA1",
+    "RPMI7951",
+    "SKMEL30"
+   ],
+   "reason": "TP53 loss-of-function in these lines removes the G1 checkpoint so gemcitabine-stressed cells depend on CHK1, whereas A2780 and LOVO retain a functional G1 checkpoint."
+  },
+  {
+   "hypothesis_id": "H45",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "NCIH520",
+    "UWB1289+BRCA1",
+    "RPMI7951"
+   ],
+   "reason": "TP53-mutant lines lack a G1 checkpoint and rely on CHK1 under gemcitabine replication stress."
+  },
+  {
+   "hypothesis_id": "H46",
+   "predicted_responders": [
+    "UWB1289+BRCA1",
+    "HT29",
+    "NCIH520"
+   ],
+   "reason": "The TP53-mutant ovarian line UWB1289+BRCA1 and other TP53-mutant lines should lack G1 control and depend on WEE1 under gemcitabine stress."
+  },
+  {
+   "hypothesis_id": "H47",
+   "predicted_responders": [
+    "UWB1289+BRCA1"
+   ],
+   "reason": "PIK3CA amplification in UWB1289+BRCA1 suggests PI3K-supported tolerance of gemcitabine stress, but the evidence is low-confidence."
+  },
+  {
+   "hypothesis_id": "H48",
+   "predicted_responders": [],
+   "reason": "BEZ-235 plus MK-8776 failed badly in other lines and there is no genetic reason to expect a response in these lines."
+  },
+  {
+   "hypothesis_id": "H51",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "NCIH520",
+    "UWB1289+BRCA1",
+    "RPMI7951"
+   ],
+   "reason": "TP53 mutations remove the G1 checkpoint so dual WEE1 and CHK1 blockade should cause replication catastrophe."
+  },
+  {
+   "hypothesis_id": "H52",
+   "predicted_responders": [
+    "NCIH23",
+    "A2780"
+   ],
+   "reason": "ATM loss is not present in these lines, but SMARCA4 or ARID1A chromatin-remodeller defects in NCIH23 and A2780 may weaken repair and raise ATR-CHK1 reliance, which is speculative."
+  },
+  {
+   "hypothesis_id": "H56",
+   "predicted_responders": [
+    "NCIH23",
+    "HT29",
+    "NCIH520",
+    "UWB1289+BRCA1"
+   ],
+   "reason": "TP53-mutant lines, including STK11/SMARCA4-lost NCIH23, lack G1 control and should depend on CHK1 under gemcitabine stress."
+  },
+  {
+   "hypothesis_id": "H57",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "NCIH520",
+    "UWB1289+BRCA1",
+    "RPMI7951",
+    "SKMEL30"
+   ],
+   "reason": "TP53 loss removes G1 control so these lines depend on S/G2 checkpoints that WEE1 plus CHK1 inhibition would collapse."
+  },
+  {
+   "hypothesis_id": "H58",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "NCIH520",
+    "UWB1289+BRCA1"
+   ],
+   "reason": "TP53 loss with replication stress from gemcitabine should raise WEE1 dependence in these lines."
+  },
+  {
+   "hypothesis_id": "H61",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "RPMI7951",
+    "SKMEL30"
+   ],
+   "reason": "TP53-mutant lines resemble the p53-mutant HNSCC models in which vorinostat plus AZD1775 caused replication stress and apoptosis (PMID:28790110), though the LNCAP hit suggests TP53 is not strictly required."
+  },
+  {
+   "hypothesis_id": "H63",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "NCIH520",
+    "UWB1289+BRCA1",
+    "RPMI7951"
+   ],
+   "reason": "TP53-mutant lines lack a G1 checkpoint and are vulnerable to combined WEE1 and CHK1 inhibition."
+  },
+  {
+   "hypothesis_id": "H67",
+   "predicted_responders": [],
+   "reason": "The lab's dinaciclib results in OVCAR3 were poor and nothing in these lines' genetics supports a response."
+  },
+  {
+   "hypothesis_id": "H71",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "NCIH520",
+    "UWB1289+BRCA1"
+   ],
+   "reason": "TP53 loss removes G1 control so doxorubicin-induced damage plus WEE1 inhibition should force damaged cells into mitosis."
+  },
+  {
+   "hypothesis_id": "H79",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "NCIH520",
+    "UWB1289+BRCA1"
+   ],
+   "reason": "TP53-mutant lines lack a G1 checkpoint and depend on CHK1 under gemcitabine stress."
+  },
+  {
+   "hypothesis_id": "H80",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "NCIH520",
+    "UWB1289+BRCA1"
+   ],
+   "reason": "TP53 loss leaves S/G2 checkpoints as the only brake so WEE1 plus CHK1 blockade should be lethal."
+  },
+  {
+   "hypothesis_id": "H84",
+   "predicted_responders": [
+    "LOVO",
+    "HT29"
+   ],
+   "reason": "The MSI LOVO line with MMR deficiency and the TP53-mutant HT29 might rely on CHK1 under gemcitabine stress, but this is speculative."
+  },
+  {
+   "hypothesis_id": "H86",
+   "predicted_responders": [
+    "LOVO"
+   ],
+   "reason": "MSI LOVO has frameshifts in repair and chromatin genes that may increase replication-stress dependence, though TP53 is not listed so confidence is low."
+  },
+  {
+   "hypothesis_id": "H90",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "UWB1289+BRCA1",
+    "NCIH520"
+   ],
+   "reason": "TP53 loss removes G1 control so doxorubicin damage plus WEE1 inhibition should force premature mitosis."
+  },
+  {
+   "hypothesis_id": "H92",
+   "predicted_responders": [
+    "LOVO",
+    "UWB1289+BRCA1"
+   ],
+   "reason": "FBXW7 R505C in LOVO may raise mTOR dependence and PIK3CA amplification in UWB1289+BRCA1 supports PI3K reliance, but BEZ-235 pairs can fail."
+  },
+  {
+   "hypothesis_id": "H94",
+   "predicted_responders": [],
+   "reason": "No line has clear AKT2 amplification and the model is near zero for this pair."
+  },
+  {
+   "hypothesis_id": "H95",
+   "predicted_responders": [],
+   "reason": "No line matches the AKT2/TP53 profile and the model prediction is near zero, so no response is expected."
+  },
+  {
+   "hypothesis_id": "H96",
+   "predicted_responders": [
+    "ZR751",
+    "UWB1289+BRCA1"
+   ],
+   "reason": "PTEN loss in ZR751 and PIK3CA amplification in UWB1289+BRCA1 make them PI3K/AKT-dependent, though the benefit may be additive."
+  },
+  {
+   "hypothesis_id": "H98",
+   "predicted_responders": [],
+   "reason": "Dinaciclib pairs performed poorly in the lab's OVCAR3 data and nothing in these lines' genetics argues for a response."
+  },
+  {
+   "hypothesis_id": "H99",
+   "predicted_responders": [
+    "UWB1289+BRCA1",
+    "ZR751"
+   ],
+   "reason": "PIK3CA amplification and PTEN loss increase PI3K/AKT dependence, so PI3K blockade could reduce tolerance of doxorubicin damage, with moderate-low confidence."
+  },
+  {
+   "hypothesis_id": "H100",
+   "predicted_responders": [
+    "UWB1289+BRCA1",
+    "ZR751"
+   ],
+   "reason": "PIK3CA amplification and PTEN L108R suggest dependence on the PI3K/AKT/mTOR axis, but the effect may be only additive."
+  },
+  {
+   "hypothesis_id": "H101",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "NCIH520",
+    "UWB1289+BRCA1"
+   ],
+   "reason": "TP53-mutant lines lack G1 control so gemcitabine stress plus WEE1 inhibition should be lethal."
+  },
+  {
+   "hypothesis_id": "H107",
+   "predicted_responders": [
+    "ZR751",
+    "UWB1289+BRCA1"
+   ],
+   "reason": "PTEN loss and PIK3CA amplification make these lines PI3K-dependent so BEZ-235 plus doxorubicin may be poorly tolerated, with low confidence."
+  },
+  {
+   "hypothesis_id": "H108",
+   "predicted_responders": [
+    "NCIH23",
+    "UWB1289+BRCA1"
+   ],
+   "reason": "NCIH23 has TOP1 amplification and UWB1289+BRCA1 has PIK3CA amplification, which suggests topoisomerase I damage and PI3K dependence, but the evidence is thin."
+  },
+  {
+   "hypothesis_id": "H110",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "NCIH520",
+    "UWB1289+BRCA1"
+   ],
+   "reason": "TP53-mutant lines lack a G1 checkpoint and rely on CHK1 after topoisomerase II damage from etoposide."
+  },
+  {
+   "hypothesis_id": "H112",
+   "predicted_responders": [
+    "HT29",
+    "NCIH23",
+    "UWB1289+BRCA1",
+    "LOVO"
+   ],
+   "reason": "TP53-mutant lines should lean on WEE1 under HDAC-induced replication stress, and MSI LOVO matches the DNA-repair-deficient LNCAP hit."
+  },
+  {
+   "hypothesis_id": "H113",
+   "predicted_responders": [
+    "LOVO"
+   ],
+   "reason": "LOVO is the only MSI line here with repair-gene frameshifts, so it tests whether DNA-repair deficiency rather than TP53 drives AZD1775 plus ZOLINZA sensitivity."
+  }
+ ]
+}
