@@ -1,0 +1,7 @@
+method,seeds,strong_at_end_mean,strong_at_end_std,auc_mean,auc_std,top5_line_share,experiments
+bo:synergy,5,44.4,19.622,0.08,0.039,0.297,250
+bo:inhibition,5,37.8,15.367,0.063,0.031,0.66,250
+uncertainty:inhibition,5,15.8,4.622,0.024,0.008,0.27,250
+random:inhibition,5,13.6,3.2,0.027,0.007,0.183,250
+random:synergy,5,13.6,3.2,0.027,0.007,0.183,250
+uncertainty:synergy,5,7.2,1.833,0.018,0.005,0.159,250

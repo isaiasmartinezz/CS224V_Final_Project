@@ -43,13 +43,13 @@ def test_clean_maps_names_sorts_pairs_and_averages_replicates():
         "drug_row": ["Veliparib", "Carboplatinum", "Veliparib"],
         "drug_col": ["Carboplatinum", "Veliparib", "paclitaxel"],
         "cell_line_name": ["A375", "A375", "A375"], "tissue_name": ["skin"] * 3,
-        "synergy_zip": [2.0, 4.0, 1.0], "synergy_loewe": [0.0] * 3, "synergy_bliss": [0.0] * 3,
+        "synergy_zip": [0.0] * 3, "synergy_loewe": [2.0, 4.0, 1.0], "synergy_bliss": [0.0] * 3,
         "synergy_hsa": [0.0] * 3, "css_ri": [10.0, 20.0, 5.0]})
     out, dropped = clean(raw)
     assert dropped == 0 and len(out) == 2
     first = out.iloc[0]
     assert (first.drug_a, first.drug_b) == ("ABT-888", "CARBOPLATIN")  # mapped, then sorted
-    assert first.synergy == 3.0 and first.inhibition == 15.0 and first.n_replicates == 2
+    assert first.synergy == 3.0 and first.synergy_loewe == 3.0 and first.inhibition == 15.0 and first.n_replicates == 2
 
 
 def test_clean_refuses_unknown_drug_names():
@@ -163,3 +163,50 @@ def test_full_llm_agent_on_real_data_with_fake_claude(monkeypatch, tmp_path):
     assert len(log) == 250 and log["exp_id"].is_unique
     assert not set(log["cell_line"]) & set(lab._heldout)
     assert log.loc[log["round"] > 0, "explanation_text"].str.contains("Predicted responders").all()
+
+
+# ---------- strong definitions (research-team feedback) ----------
+
+def fake_truth(n_lines=8, per_line=200, seed=0):
+    rng = np.random.default_rng(seed)
+    lines = np.repeat([f"L{i}" for i in range(n_lines)], per_line)
+    sensitivity = np.repeat(rng.normal(0, 20, n_lines), per_line)  # some lines respond to everything
+    return pd.DataFrame({"cell_line": lines,
+                         "synergy": rng.normal(0, 10, len(lines)),
+                         "inhibition": 50 + sensitivity + rng.normal(0, 10, len(lines))},
+                        index=[f"E{i}" for i in range(len(lines))])
+
+
+def test_joint_needs_both_scores_and_hits_5_percent():
+    from backup_lab.thresholds import strong_labels
+    truth = fake_truth()
+    labels, info = strong_labels(truth, "joint")
+    assert abs(labels.mean() - 0.05) < 0.005
+    strong = truth[labels]
+    assert (strong["synergy"] >= info["synergy_cutoff"]).all()
+    assert (strong["inhibition"] >= info["inhibition_cutoff"]).all()
+
+
+def test_within_line_spreads_strong_set_and_handles_ties():
+    from backup_lab.thresholds import strong_by_line, strong_labels
+    truth = fake_truth()
+    labels, _ = strong_labels(truth, "joint_within_line")  # within-line percentiles tie across lines
+    assert abs(labels.mean() - 0.05) < 0.005
+    by = strong_by_line(truth, ("joint", "joint_within_line"))
+    assert by["joint_within_line"].std() < by["joint"].std()
+
+
+def test_flag_strong_looks_up_by_exp_id_not_log_values():
+    from backup_lab.thresholds import flag_strong, strong_labels
+    truth = fake_truth()
+    labels, _ = strong_labels(truth, "joint")
+    log = pd.DataFrame({"exp_id": [labels.idxmax(), labels.idxmin()], "synergy": [-999, 999]})
+    assert flag_strong(log, truth, "joint")["is_strong_joint"].tolist() == [True, False]
+
+
+def test_results_dir_separates_synergy_metrics(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("SYNERGY_METRIC", "bliss")
+    assert lab_source.results_dir("backup").name == "backup_bliss"
+    monkeypatch.setenv("SYNERGY_METRIC", "")
+    assert lab_source.results_dir("backup").name == "backup"

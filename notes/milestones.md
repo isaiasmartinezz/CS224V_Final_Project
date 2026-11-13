@@ -112,6 +112,13 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 
 ## Week 3: Nov 9 to Nov 15 → M3
 
+**[Both] Definitions locked with research team (Nov 13)**
+- [x] Loewe synergy (Bliss robustness check), CSS inhibition
+- [x] Strong = joint Loewe + CSS cutoff, ranked within each cell line (primary); all-experiments joint (secondary)
+- [x] Baselines rerun under the new definitions (5 seeds, Loewe and Bliss)
+- [ ] No-LLM control (model picks from its own top 50): main control, run with the first real agent runs
+- [ ] Decide whether baselines should optimize the joint goal directly
+
 **[I]**
 - [ ] Switch to SHELDON if access is ready (keep PubMed as fallback); confirm exclusion works
 - [ ] Tune prompts using Week 2 failures; record changes in the decision log

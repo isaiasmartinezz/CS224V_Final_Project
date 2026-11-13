@@ -27,7 +27,11 @@ def get_source(cli_value=None):
 
 
 def results_dir(source):
-    d = Path("results") / source
+    """results/<source>/, or results/<source>_<metric>/ when SYNERGY_METRIC overrides the default
+    (e.g. the Bliss robustness check), so runs with different synergy scores never mix."""
+    load_dotenv()
+    metric = (os.getenv("SYNERGY_METRIC") or "").strip().lower()
+    d = Path("results") / (f"{source}_{metric}" if metric and source == "backup" else source)
     d.mkdir(parents=True, exist_ok=True)
     return d
 

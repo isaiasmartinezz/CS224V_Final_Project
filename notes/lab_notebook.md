@@ -96,3 +96,19 @@ Strong cutoffs (top 5% / top 1%): synergy (ZIP) 11.84 / 19.00; inhibition (CSS) 
 Random matches chance (12.5 expected). BO is a strong bar: ~5× random for synergy, ~9× for inhibition. Figures: `results/backup/figures/`.
 
 **Notes:** uncertainty sampling varies a lot by seed. Inhibition is much easier to find than synergy (it depends mostly on how potent each drug is in each line).
+
+## 2026-11-13: Baselines under the team's definitions (Loewe + CSS, joint, within-line primary)
+
+Strong combinations found in 250 experiments, 5 seeds, mean ± std. Chance ≈ 12.5. "bo:synergy" = BO optimizing synergy.
+
+| method | within-line (primary), Loewe | all-experiments, Loewe | within-line, Bliss | all-experiments, Bliss |
+|---|---|---|---|---|
+| random | 10.6 ± 2.9 | 13.6 ± 3.2 | 13.0 ± 2.6 | 12.2 ± 1.7 |
+| uncertainty:synergy | 6.6 ± 4.1 | 7.2 ± 1.8 | 14.0 ± 3.1 | 13.0 ± 9.7 |
+| uncertainty:inhibition | 10.4 ± 5.6 | 15.8 ± 4.6 | 12.0 ± 4.7 | 19.0 ± 6.8 |
+| bo:synergy | **35.4 ± 18.9** | 44.4 ± 19.6 | **33.4 ± 8.9** | 41.8 ± 12.5 |
+| bo:inhibition | 22.2 ± 7.6 | 37.8 ± 15.4 | 23.2 ± 3.7 | 39.6 ± 17.7 |
+
+**Takeaways:** BO (optimizing synergy) is ~3× random on the primary definition. Uncertainty sampling ≈ random. BO optimizing CSS loses ~40% under within-line ranking (66% of its picks are in the 5 most sensitive lines), which is the effect the within-line definition is meant to remove. Bliss gives the same conclusions. BO varies a lot by seed with Loewe (±19); consider 10 seeds.
+
+**Not done this week:** real-LLM agent runs (`.env` key is still a placeholder), no-LLM control, DepMap features, response-model checks. Ryan's `lab/` is still empty, so the backup lab is the working lab.

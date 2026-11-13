@@ -55,7 +55,7 @@ A function `run_agent(lab, batch_size=10)` that:
 
 ## 4. Definitions
 
-- "Strong" combination = top 5% of all experiments, for each outcome separately
+- "Strong" combination = top 10% Loewe synergy AND top ~30% CSS, ranked within each cell line, tuned so ~5% of experiments qualify (primary; see `backup_lab/thresholds.py`). Secondary: same rule ranked over all experiments
   (top 1% as a backup check)
 - Budget = 250 experiments per method
 - Batch size = 10 per round (25 rounds)

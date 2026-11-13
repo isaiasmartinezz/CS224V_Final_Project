@@ -136,3 +136,23 @@ Every design decision, the alternatives considered, and why.
 **Why:** Simple, fast (~8 s per 250-experiment run), and gives honest uncertainty. kappa = 1.0 is untuned. DepMap genetics are not in the model yet.
 
 **Interface assumed for Ryan's model** (used when LAB_SOURCE=ryan): `ResponseModel(cell_lines, seed=)` with `fit(history, outcome)` and `predict(candidates) -> (mean, std)`. See `notes/interface.md`.
+
+## 2026-11-13: Outcome scores, per research-team feedback (Janina, Minseung)
+
+**Decision:** Synergy = **Loewe** (comparable with prior ML work on this dataset, starting with DeepSynergy). **Bliss** = robustness check (the original O'Neil scoring). Inhibition = **CSS** from DrugComb. Supersedes the provisional ZIP choice of 2026-11-09. Bliss runs go to `results/backup_bliss/` (`SYNERGY_METRIC=bliss`).
+
+## 2026-11-13: "Strong" = joint cutoff, ranked within each cell line (primary)
+
+**Decision:** A combination is strong if it passes a cutoff on *both* scores: top 10% Loewe and a CSS cutoff tuned so ~5% of non-held-out experiments qualify (CSS lands at about the top 31%). **Primary:** both scores ranked within each cell line (`joint_within_line`). **Secondary:** the same rule ranked over all experiments (`joint`). Single-score top 5% / 1% kept as extra checks. Code: `backup_lab/thresholds.py`; `backup_lab/compare.py` defaults to the primary.
+
+**Alternatives:** sum of the two scores (rejected: different scales, team advice); all-experiments ranking as primary (rejected: see below).
+
+**Why:** Without within-line ranking a method can score well by finding generally drug-sensitive lines. Measured: with CSS alone 5 of 29 lines hold 57% of strong combinations (MSTO has 181, two lines have none); the all-experiments joint rule still gives 39%; within-line gives 21% (an even spread is 17%). BO optimizing CSS puts 66% of its picks in the 5 most sensitive lines (random: 18%).
+
+## 2026-11-13: Agent is built on top of the statistical model
+
+**Decision:** The response model shortlists 50 candidates (BO score plus a few most-uncertain); the LLM chooses 10 from that list using literature. Headline comparison: agent vs BO on its own. The **no-LLM control** (model picks from its own top 50, no LLM) is therefore the main control and runs alongside the first real agent runs, not in Week 4.
+
+**Why:** It's how the agent is designed, and it isolates what the literature reasoning adds beyond statistics.
+
+**Still open:** whether baselines should optimize the joint goal directly (they currently optimize one score: synergy or inhibition).

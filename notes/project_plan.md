@@ -95,7 +95,7 @@ One row per drug: drug, search_name, pubchem_cid, smiles, chembl_id, chembl_name
 
 - **Budget:** 250 experiments per method per run.
 - **Batch size:** 10 experiments per round (25 rounds).
-- **Strong combination:** top 5% of all non-held-out experiments, computed separately for synergy and for inhibition. Top 1% as a sensitivity check.
+- **Strong combination (updated Nov 2026, research-team feedback):** passes a cutoff on *both* scores, ranked within each cell line: top 10% Loewe synergy and a CSS cutoff tuned so ~5% of non-held-out experiments qualify (primary). Secondary: the same rule ranked over all experiments. Single-score top 5% / top 1% kept as extra checks. Bliss synergy is the robustness check. Code: `backup_lab/thresholds.py`.
 - **Seeds:** every method runs with at least 5 random seeds; report mean and spread.
 - **Initial batch:** every method starts from the same random first batch per seed, so comparisons are fair.
 

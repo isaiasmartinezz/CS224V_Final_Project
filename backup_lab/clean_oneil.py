@@ -9,7 +9,7 @@ Output (data/processed/backup/, not committed except heldout_lines.txt):
 
 Rules: pair order is alphabetical; replicate rows of the same (pair, line) are averaged;
 rows missing a synergy score or inhibition are dropped and counted.
-synergy = ZIP by default (provisional until the research team picks; see decision log);
+synergy = Loewe (research team recommendation, comparable with DeepSynergy-era ML work); Bliss is the robustness check;
 inhibition = DrugComb css_ri, the combination sensitivity score (mean of css_row and css_col).
 
 Usage: python -m backup_lab.clean_oneil"""
@@ -22,7 +22,7 @@ RAW = Path("data/raw/drugcomb_oneil.csv")
 OUT = Path("data/processed/backup")
 HELDOUT = OUT / "heldout_lines.txt"
 HELDOUT_N, HELDOUT_SEED = 10, 2026
-DEFAULT_SYNERGY = "zip"
+DEFAULT_SYNERGY = "loewe"  # research team recommendation (Nov 2026); Bliss = robustness check
 
 # DrugComb name -> our dataset name (data/drug_names.txt). Every match checked on Nov 9 by
 # looking up the DrugComb name in PubChem and comparing CIDs with data/drug_annotations.csv.
