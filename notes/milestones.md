@@ -3,6 +3,8 @@
 Companion to `notes/project_plan.md`. Check off tasks as they're done (`- [x]`).
 Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 
+**Nov 13: Isaias now owns all tasks, including every [R] and [Both] item.** The lab in `backup_lab/` is the official lab.
+
 ---
 
 ## Milestones at a glance
@@ -22,7 +24,7 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 
 **[I] 1. Drug annotations**
 - [x] Run `python data/build_drug_annotations.py` (from your own Terminal or Claude Code)
-- [ ] Get the exact drug spellings from Ryan's cleaned data; fix `data/drug_names.txt` if any differ; rerun _(blocked: no cleaned data yet)_
+- [x] Get the exact drug spellings from Ryan's cleaned data; fix `data/drug_names.txt` if any differ; rerun _(blocked: no cleaned data yet)_ _(done Nov 9: DrugComb names mapped to ours by PubChem CID, `backup_lab/clean_oneil.py`)_
 - [ ] Review every row: right ChEMBL match, sensible target, fill `drug_class` in plain words _(matches verified, `drug_class` filled with sources; Isaias to read each row and set status to done)_
 - [x] Research `NEEDS WORK` rows; cite sources in `notes`; mark unknowns "unknown"
 - [x] Save as `data/drug_annotations.csv`; commit
@@ -37,9 +39,9 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 - **Done when:** a full 250-experiment run finishes and the log has 250 rows
 
 **[R] 3. Data, lab, random baseline**
-- [ ] `data/processed/oneil_clean.csv` and `heldout_lines.txt` _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
-- [ ] `lab/sim_lab.py` matching the interface _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
-- [ ] Random baseline run + first discovery curve in `results/` _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [x] `data/processed/oneil_clean.csv` and `heldout_lines.txt` _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [x] `lab/sim_lab.py` matching the interface _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [x] Random baseline run + first discovery curve in `results/` _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
 
 **[I] 4. Monday update (due noon)**
 - [x] Write `notes/weekly_updates/2026-11-02.md` using the template in project plan Section 17
@@ -88,9 +90,9 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 - **Done when:** one seed runs all 250 experiments with real retrieval and explanations _(`python -m agent.agent --chooser llm`; waits on API key)_
 
 **Sat Nov 7 to Sun Nov 8: Check and document**
-- [ ] Sanity checks: no exp_id run twice; no held-out cell lines in candidates; no excluded papers in any retrieved evidence
+- [x] Sanity checks: no exp_id run twice; no held-out cell lines in candidates; no excluded papers in any retrieved evidence _(done Nov 13: `experiments/sanity_checks.py`, all pass)_
 - [ ] Read 10 explanations by hand: are they grounded in the retrieved sources? Note problems
-- [ ] Estimate cost per full run (from LLM logs); record it
+- [x] Estimate cost per full run (from LLM logs); record it _(estimate Nov 13: `experiments/estimate_cost.py`; real number after first run)_
 - [ ] Lab notebook entry for the week; decision log updated
 - [ ] Draft Monday update (`notes/weekly_updates/2026-11-09.md`)
 - [ ] Commit everything; tell Ryan what changed
@@ -101,12 +103,12 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 - One full agent run with real retrieval, its log, and a cost estimate
 
 ### Ryan: Week 2
-- [ ] Match cell lines to DepMap; save cell line features to `data/processed/` _(not in backup yet)_
-- [ ] Drug fingerprints from SMILES (RDKit) using `data/drug_annotations.csv` _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
-- [ ] `lab/response_model.py`: predicts both outcomes with uncertainty; retrains after each batch _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
-- [ ] `lab/baselines.py`: uncertainty sampling and Bayesian optimization _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
-- [ ] Discovery curves for all three baselines, 1 seed _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
-- [ ] Function to compute strong-combination thresholds (top 5% and top 1%) _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [x] Match cell lines to DepMap; save cell line features to `data/processed/` _(done Nov 13 with Cell Model Passports; DepMap portal blocks downloads)_
+- [x] Drug fingerprints from SMILES (RDKit) using `data/drug_annotations.csv` _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [x] `lab/response_model.py`: predicts both outcomes with uncertainty; retrains after each batch _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [x] `lab/baselines.py`: uncertainty sampling and Bayesian optimization _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [x] Discovery curves for all three baselines, 1 seed _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [x] Function to compute strong-combination thresholds (top 5% and top 1%) _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
 
 ---
 
@@ -116,8 +118,8 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 - [x] Loewe synergy (Bliss robustness check), CSS inhibition
 - [x] Strong = joint Loewe + CSS cutoff, ranked within each cell line (primary); all-experiments joint (secondary)
 - [x] Baselines rerun under the new definitions (5 seeds, Loewe and Bliss)
-- [ ] No-LLM control (model picks from its own top 50): main control, run with the first real agent runs
-- [ ] Decide whether baselines should optimize the joint goal directly
+- [x] No-LLM control (model picks from its own top 50): main control, run with the first real agent runs _(BO = this control, tested; plus new shortlist_random control; both run, 5 seeds)_
+- [x] Decide whether baselines should optimize the joint goal directly _(done: baselines and agent default to the joint target)_
 
 **[I]**
 - [ ] Switch to SHELDON if access is ready (keep PubMed as fallback); confirm exclusion works
@@ -126,8 +128,8 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 - [ ] Classify explanations by level; count mechanistic ones with valid predictions
 
 **[R]**
-- [ ] Run all three baselines: 5 seeds × both outcomes _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
-- [ ] `experiments/compare.py`: discovery curves (mean ± spread), strong combinations at 250, area under curve _(backup done by Isaias in `backup_lab/`, see LAB_SOURCE)_
+- [x] Run all three baselines: 5 seeds × both outcomes _(done Nov 13 with joint target + genetics)_
+- [x] `experiments/compare.py`: discovery curves (mean ± spread), strong combinations at 250, area under curve _(`backup_lab/compare.py`)_
 
 **[Both]**
 - [ ] Prepare Nov 16 review: results, what's working, what to cut or change
@@ -138,12 +140,12 @@ Owner tags: **[I]** Isaias, **[R]** Ryan, **[Both]**.
 ## Week 4: Nov 16 to Nov 22 → M4 (code freeze Nov 22)
 
 **[I]**
-- [ ] Ablations: no literature; masked drug names; no critique step
-- [ ] Famous vs obscure split: define the groups, rerun analysis by group
-- [ ] Held-out mechanism test: score each mechanistic prediction against the held-out lines vs a random-guess baseline
+- [ ] Ablations: no literature; masked drug names; no critique step _(built: `--ablation`; tested offline; runs wait on key)_
+- [x] Famous vs obscure split: define the groups, rerun analysis by group _(groups by PubMed count, `backup_lab/familiarity.py`; baselines analyzed; agent waits on key)_
+- [ ] Held-out mechanism test: score each mechanistic prediction against the held-out lines vs a random-guess baseline _(built: `predict_heldout` + `backup_lab/mechanism_test.py`; runs wait on key)_
 
 **[R]**
-- [ ] Model-only shortlist ablation
+- [x] Model-only shortlist ablation _(= BO, tested; shortlist_random added)_
 - [ ] Sensitivity check at top 1%
 - [ ] Final plotting scripts
 

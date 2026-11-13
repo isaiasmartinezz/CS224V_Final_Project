@@ -1,4 +1,4 @@
-"""Simulated lab backed by the real O'Neil 2016 results (backup copy of Ryan's lab/sim_lab.py).
+"""Simulated lab backed by the real O'Neil 2016 results (the official lab).
 Follows notes/interface.md exactly. Turned on/off with LAB_SOURCE (see agent/lab_source.py)."""
 from pathlib import Path
 

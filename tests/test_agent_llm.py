@@ -100,15 +100,21 @@ class FakeClaude:
             self.n += 1
             out = {"hypotheses": [{"id": f"H{self.n}", "statement": "s", "drugs": [row.drug_a, row.drug_b],
                                    "level": "mechanistic", "predicted_responders": [row.cell_line],
-                                   "rationale": "r", "evidence_ids": ["PMID:1"]}]}
+                                   "rationale": "r", "evidence_ids": ["PMID:1"] if "[PMID:1]" in prompt else []}]}
         elif step == "Critique":
             ids = [h["id"] for h in json.loads(section(prompt, "Hypotheses"))]
             out = {"verdicts": [{"id": i, "verdict": "keep", "revised_statement": "", "reason": "ok",
                                  "evidence_ids": []} for i in ids]}
+        elif step == "HeldoutPredictions":
+            lines = [l[2:].split(":")[0] for l in section(prompt, "Untested cell lines").splitlines() if l.startswith("- ")]
+            hyps = json.loads(section(prompt, "Mechanistic hypotheses"))
+            out = {"predictions": [{"hypothesis_id": h["id"], "predicted_responders": lines[:2],
+                                    "reason": "r"} for h in hyps]}
         else:
             k = int(re.search(r"Choose exactly (\d+)", prompt).group(1))
             ids = pd.read_csv(io.StringIO(section(prompt, "Shortlist")))["exp_id"][:k]
-            hyps = json.loads(section(prompt, "Hypotheses"))
+            text = section(prompt, "Hypotheses")
+            hyps = json.loads(text) if text.startswith("[") else [{"id": "explore"}]
             out = {"picks": [{"exp_id": e, "hypothesis_id": hyps[-1]["id"], "level": "mechanistic",
                               "reason": "tests it"} for e in ids]}
         return SimpleNamespace(stop_reason="end_turn", model=prompts.MODEL,

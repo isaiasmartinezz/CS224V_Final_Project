@@ -1,0 +1,6 @@
+method,seeds,strong_at_end_mean,strong_at_end_std,auc_mean,auc_std,top5_line_share,experiments
+bo_k1:joint,5,43.6,10.837,0.074,0.017,0.123,250
+bo_k0:joint,5,41.4,16.681,0.072,0.042,0.242,250
+bo_k0.5:joint,5,36.2,8.328,0.063,0.018,0.276,250
+bo_k2:joint,5,30.4,7.813,0.057,0.013,0.194,250
+bo_k4:joint,5,17.0,4.817,0.036,0.012,0.098,250

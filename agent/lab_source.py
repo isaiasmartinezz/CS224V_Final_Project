@@ -62,6 +62,26 @@ def cell_line_tissue(source):
     return dict(zip(df["cell_line"], df["tissue"])) if "tissue" in df else {}
 
 
+def line_features_for(source):
+    """Cell-line genetics for the model, or None if not built (run backup_lab.cell_line_features)."""
+    import pandas as pd
+    d = Path("data/processed/backup")
+    if source != "backup" or not (d / "cell_line_features.csv").exists():
+        return None
+    return {"line": pd.read_csv(d / "cell_line_features.csv", index_col="cell_line"),
+            "target_expr": pd.read_csv(d / "target_expression.csv", index_col="cell_line")}
+
+
+def line_summaries_for(source):
+    """{cell_line: plain-text genetics} for the LLM, or {} if not built."""
+    import pandas as pd
+    path = Path("data/processed/backup/cell_line_summaries.csv")
+    if source != "backup" or not path.exists():
+        return {}
+    df = pd.read_csv(path)
+    return dict(zip(df["cell_line"], df["summary"]))
+
+
 def make_response_model(source, cell_lines, seed=0):
     """A model with fit(history, outcome) and predict(candidates) -> (mean, std), or None
     (then the agent shortlists at random). The stub lab gets None to stay fast."""
@@ -75,7 +95,8 @@ def make_response_model(source, cell_lines, seed=0):
             return None
         return ResponseModel(cell_lines, seed=seed)  # assumes the interface in notes/interface.md
     from backup_lab.response_model import ResponseModel
-    return ResponseModel(cell_lines, tissue=cell_line_tissue(source), seed=seed)
+    return ResponseModel(cell_lines, tissue=cell_line_tissue(source), seed=seed,
+                         line_features=line_features_for(source))
 
 
 def truth_for(lab):

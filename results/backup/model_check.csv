@@ -1,0 +1,13 @@
+outcome,features,n_train,spearman,within_1sd,within_2sd,err_vs_std
+synergy,no genetics,50,0.278,0.712,0.911,0.236
+synergy,no genetics,100,0.31,0.745,0.922,0.31
+synergy,no genetics,250,0.459,0.741,0.925,0.335
+synergy,with genetics,50,0.281,0.732,0.917,0.228
+synergy,with genetics,100,0.299,0.753,0.922,0.304
+synergy,with genetics,250,0.456,0.762,0.934,0.347
+inhibition,no genetics,50,0.407,0.616,0.908,0.026
+inhibition,no genetics,100,0.51,0.659,0.934,0.087
+inhibition,no genetics,250,0.581,0.661,0.933,0.088
+inhibition,with genetics,50,0.409,0.62,0.915,0.041
+inhibition,with genetics,100,0.509,0.674,0.942,0.085
+inhibition,with genetics,250,0.594,0.682,0.946,0.09

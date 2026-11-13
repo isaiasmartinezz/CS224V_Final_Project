@@ -112,3 +112,30 @@ Strong combinations found in 250 experiments, 5 seeds, mean ± std. Chance ≈ 1
 **Takeaways:** BO (optimizing synergy) is ~3× random on the primary definition. Uncertainty sampling ≈ random. BO optimizing CSS loses ~40% under within-line ranking (66% of its picks are in the 5 most sensitive lines), which is the effect the within-line definition is meant to remove. Bliss gives the same conclusions. BO varies a lot by seed with Loewe (±19); consider 10 seeds.
 
 **Not done this week:** real-LLM agent runs (`.env` key is still a placeholder), no-LLM control, DepMap features, response-model checks. Ryan's `lab/` is still empty, so the backup lab is the working lab.
+
+## 2026-11-13: Everything without the API key (Isaias now owns all tasks)
+
+**Built:** cell-line genetics from Cell Model Passports (`backup_lab/fetch_cell_lines.py`, `cell_line_map.py`, `cell_line_features.py`, `drug_target_genes.py`); genetics in the response model and in the agent's prompts; joint target (`agent/targets.py`); shared shortlist (`agent/shortlist.py`); `shortlist_random` control; ablations (`--ablation no_literature | no_critique | masked_names`); held-out prediction step (`predict_heldout`) and scorer (`backup_lab/mechanism_test.py`); famous vs obscure (`backup_lab/familiarity.py`); response-model check (`backup_lab/model_check.py`); `experiments/sanity_checks.py`; `experiments/estimate_cost.py`. 59 tests pass.
+
+**Response model check** (`results/backup/model_check.csv`, tuning seeds): rank accuracy on unseen experiments 0.28 → 0.46 (synergy) and 0.41 → 0.59 (inhibition) as training grows 50 → 250. Uncertainty is calibrated (71–76% within 1 sd; 91–95% within 2 sd) and tracks error for synergy (0.23–0.35) but barely for inhibition (0.03–0.09), which explains why uncertainty sampling fails. Genetics add ≤ 0.02 here (the model already knows each line by name); they matter for reasoning about unseen lines.
+
+**BO tuning** (seeds 100–104, `results/backup/tuning/`): kappa 0 → 41.4, 0.5 → 36.2, **1 → 43.6**, 2 → 30.4, 4 → 17.0 strong (primary). Keep kappa = 1.
+
+**Final baselines** (seeds 0–4, target = joint, with genetics). Strong combinations found in 250 (mean ± sd; chance ≈ 12.5):
+
+| method | primary (within-line joint) | secondary (all-experiments joint) | picks in 5 most sensitive lines |
+|---|---|---|---|
+| random | 10.6 ± 2.9 | 13.6 ± 3.2 | 18% |
+| uncertainty | 15.4 ± 3.4 | 14.8 ± 4.0 | 16% |
+| shortlist_random | 45.2 ± 13.4 | 38.6 ± 14.5 | 16% |
+| **BO** | **47.2 ± 7.9** | **47.2 ± 14.5** | 22% |
+
+**Key point:** picking at random from the model's 50-candidate shortlist nearly matches BO's top picks. The shortlist carries most of the value; the LLM must choose better than ~45–47 from that list to show it adds anything. Aiming at the joint target also cut BO's sensitive-line bias (22% of picks vs 66% when it optimized CSS alone).
+
+**Famous vs obscure** (primary definition): obscure-only pairs are 11% of experiments but 14% of strong ones. BO (joint) finds 11.8 / 26.4 / 9.0 strong in famous / mixed / obscure pairs. Earlier synergy/inhibition-target logs in `results/backup/` predate genetics and kappa tuning; the joint-target logs are the reported ones.
+
+**Cost estimate** (one full run, fake Claude, real prompts): 73 calls, ~650k input tokens. Opus 5.5 at high effort ≈ $5–11 per run, too expensive for the < $30 budget. Leaning toward Sonnet 5.5 with medium effort and trimmed literature (≈ $1.50–3.50 per run) for one demonstration run of each LLM arm; not switched yet.
+
+**Sanity checks:** 75 run logs, 401 papers returned from cached searches (3 excluded papers in the raw cache, all filtered out), all pass.
+
+**Still blocked on the API key:** steps 3–4 of the ladder (agent without / with literature), the other ablations, the mechanism test, reading explanations, real cost.

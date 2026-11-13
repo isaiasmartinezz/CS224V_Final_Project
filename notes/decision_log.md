@@ -156,3 +156,41 @@ Every design decision, the alternatives considered, and why.
 **Why:** It's how the agent is designed, and it isolates what the literature reasoning adds beyond statistics.
 
 **Still open:** whether baselines should optimize the joint goal directly (they currently optimize one score: synergy or inhibition).
+
+## 2026-11-13: Isaias takes over all tasks; backup lab is official
+
+**Decision:** Isaias now owns every task in the plan, including Ryan's (data, lab, response model, baselines, evaluation). `backup_lab/` is the official lab and `LAB_SOURCE=backup` is the default. Ryan's `lab/` is not used. The switch code stays, but nothing depends on it.
+
+## 2026-11-13: Cell-line genetics from Cell Model Passports (not DepMap)
+
+**Decision:** Genetics come from Wellcome Sanger's Cell Model Passports (public files at cog.sanger.ac.uk/cmp/download). The DepMap portal puts automated downloads behind a bot-verification page, which we don't bypass. Files: model list, `mutations_summary` (cancer-driver mutations per line), `cnv_summary`, and `rnaseq_latest` (streamed; only our lines kept).
+
+**Name matching** (`backup_lab/cell_line_map.py`): 35/39 match on name, tissue and cancer type. MSTO → MSTO-211H and LNCAP → LNCaP-Clone-FGC by standard full name. UWB1289+BRCA1 (engineered, BRCA1 restored) uses the UWB1.289 profile with BRCA1 set to unknown. COLO320DM has no confident match (CMP has COLO-320 and COLO-320-HSR only) → genetics unknown.
+
+**Features:** mutation panel = driver genes mutated in ≥ 3 of our lines or targeted by a drug (45 genes); amplification/deletion of drug-target genes; each drug's target-gene expression per line (mean over the drug's ChEMBL target genes, `data/drug_target_genes.csv`). CMP's `rsem_tpm` column is already log2-scaled (max 16.6; ACTB/GAPDH ≈ 11), so it is used as-is. 5 lines lack mutation data (COLO320DM, DLD1, EFM192B, KPL1, ZR751): unknown, never filled with guesses for the LLM. The LLM sees a one-line plain summary per cell line; the model gets the numeric features.
+
+## 2026-11-13: Joint target for methods
+
+**Decision:** Methods can now optimize `joint`: each score has its cell line's observed mean removed (shrunk toward the overall mean with weight 2, so a line with 1–2 results isn't over-adjusted), is standardized, and the joint value is the smaller of the two. Default target for the agent and baselines is `joint`. Computed only from returned results, never from hidden data or evaluation cutoffs.
+
+**Why:** Mirrors the evaluation definition (both scores high, within line) so methods aim at what they're graded on. Shrink weight lowered 5 → 2 after a test showed 5 left too much line effect at ~8 results per line.
+
+## 2026-11-13: Controls
+
+**Decision:** (1) The "model-only shortlist" control from plan 9.2 *is* BO: the agent's shortlist is ordered by the same score, so its top 10 equals BO's batch (tested). (2) New control `shortlist_random`: 10 at random from the same 50-candidate shortlist. Together they bracket the LLM: does it beat the model's own top pick (BO), and does it beat chance within the list it is given?
+
+## 2026-11-13: Ablations implemented (plan 9.2)
+
+`--ablation no_literature | no_critique | masked_names`. Masked names: every drug name the LLM sees becomes "Drug 01".."Drug 38"; annotations show only class and targets (no names, SMILES, IDs); names inside retrieved titles/abstracts are replaced. Known limitation: brand names or synonyms not in the annotation table could slip through abstracts.
+
+## 2026-11-13: Mechanism test (plan 9.3)
+
+After a run, the LLM sees the 10 held-out lines' names and genetics (never results) and predicts which should respond to each mechanistic hypothesis. Scoring: for the pairs a hypothesis covers, each held-out line's response = mean within-line percentile (target score; joint = smaller of the two percentiles); responders = top half of lines. Report precision vs base rate (~0.5), response gap, and a permutation p-value. Exploratory (10 lines).
+
+## 2026-11-13: Famous vs obscure (plan 9.4)
+
+Familiarity = PubMed papers naming the drug (title/abstract, same query as retrieval; `data/drug_familiarity.csv`). Famous ≥ 1,000 papers: 26 drugs; obscure < 1,000: 12 (mostly Merck compounds). Counts are continuous (2 to ~75,000), so 1,000 is a round cutoff, not a natural gap; niraparib (1,012) sits on the line. Approval (ATC) not used: ChEMBL lacks ATC codes for some approved drugs (e.g. dasatinib). Pair groups: famous / mixed / obscure.
+
+## 2026-11-13: BO tuning on separate seeds
+
+kappa (UCB exploration weight) is tuned on seeds 100–104 (`results/backup/tuning/`), never on the reporting seeds 0–4, so the reported comparison isn't tuned to its own test.

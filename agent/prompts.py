@@ -74,6 +74,16 @@ class Selection(Strict):
     picks: list[Pick]
 
 
+class HeldoutPrediction(Strict):
+    hypothesis_id: str
+    predicted_responders: list[str]  # held-out cell lines expected to respond
+    reason: str
+
+
+class HeldoutPredictions(Strict):
+    predictions: list[HeldoutPrediction]
+
+
 # ---------- prompts ----------
 
 SYSTEM = """You are a cancer pharmacologist helping choose drug-combination experiments in a \
@@ -87,7 +97,7 @@ provided source, say so in the rationale and leave it uncited. Prefer specific, 
 mechanisms over vague ones, and say plainly when evidence is thin."""
 
 HYPOTHESIZE_TASK = """Propose up to {max_h} hypotheses about which drug pairs in the shortlist \
-will show high {outcome}, and why.
+will show high {outcome}, and why. Use the cell lines' genetics where given.
 
 For each hypothesis:
 - id: "H<number>", continuing after existing ids
@@ -107,6 +117,22 @@ batch. Balance testing the most promising hypotheses against experiments that wo
 competing hypotheses apart; a few "explore" picks for untested drug classes are fine. Each \
 pick names the hypothesis it tests (or "explore"), the explanation level, and a one-sentence \
 reason."""
+
+
+HELDOUT_TASK = """These cell lines were never tested in this screen. For each mechanistic \
+hypothesis below, predict which of these cell lines should respond (show high {outcome} for the \
+drug pairs the hypothesis covers), using each line's genetics and the hypothesis's mechanism. \
+Give exactly one prediction per hypothesis; an empty list means no line should respond. \
+Explain the genetic reason in one sentence."""
+
+
+def _describe(outcome):
+    from agent.targets import DESCRIBE
+    return DESCRIBE.get(outcome, outcome)
+
+
+def _fmt_lines(line_info):
+    return "\n".join(f"- {l}: {s}" for l, s in sorted(line_info.items())) or "(no genetics available)"
 
 
 def _fmt_annotations(annotations, drugs):
@@ -140,7 +166,8 @@ def _fmt_history(history, outcome, n=15):
     if history is None or len(history) == 0:
         return "(no experiments run yet)"
     h = history.sort_values(outcome, ascending=False)
-    cols = ["drug_a", "drug_b", "cell_line", "synergy", "inhibition"]
+    cols = ["drug_a", "drug_b", "cell_line", "synergy", "inhibition"] + (
+        [outcome] if outcome not in ("synergy", "inhibition") else [])
     return (f"{len(history)} experiments run so far.\nHighest {outcome}:\n{h.head(n)[cols].to_csv(index=False)}"
             f"\nLowest {outcome}:\n{h.tail(5)[cols].to_csv(index=False)}")
 
@@ -218,14 +245,16 @@ def _source_ids(evidence):
     return {p["source_id"] for parts in evidence.values() for papers in parts.values() for p in papers}
 
 
-def hypothesize(llm, shortlist, annotations, evidence, history, hypotheses, outcome="synergy", max_h=6):
+def hypothesize(llm, shortlist, annotations, evidence, history, hypotheses, outcome="synergy", max_h=6,
+                line_info=None):
     drugs = set(shortlist["drug_a"]) | set(shortlist["drug_b"])
     lines, ids = set(shortlist["cell_line"]), _source_ids(evidence)
     taken = {h.id for h in hypotheses}
     user = "\n\n".join([
-        HYPOTHESIZE_TASK.format(max_h=max_h, outcome=outcome),
+        HYPOTHESIZE_TASK.format(max_h=max_h, outcome=_describe(outcome)),
         f"## Drug annotations\n{_fmt_annotations(annotations, drugs)}",
         f"## Shortlist\n{_fmt_shortlist(shortlist)}",
+        f"## Cell lines\n{_fmt_lines(line_info or {})}",
         f"## Results so far\n{_fmt_history(history, outcome)}",
         f"## Existing hypotheses\n{_fmt_hypotheses(hypotheses)}",
         f"## Literature\n{_fmt_evidence(evidence)}",
@@ -254,11 +283,12 @@ def hypothesize(llm, shortlist, annotations, evidence, history, hypotheses, outc
     return out.hypotheses if out else None
 
 
-def critique(llm, hypotheses, evidence, history, outcome="synergy"):
+def critique(llm, hypotheses, evidence, history, outcome="synergy", line_info=None):
     ids, want = _source_ids(evidence), {h.id for h in hypotheses}
     user = "\n\n".join([
         CRITIQUE_TASK,
         f"## Hypotheses\n{_fmt_hypotheses(hypotheses)}",
+        f"## Cell lines\n{_fmt_lines(line_info or {})}",
         f"## Results so far\n{_fmt_history(history, outcome)}",
         f"## Literature\n{_fmt_evidence(evidence)}",
     ])
@@ -309,3 +339,31 @@ def select(llm, shortlist, hypotheses, history, k=10, outcome="synergy"):
     return [Pick(exp_id=e, hypothesis_id="explore", level="statistical",
                  reason="LLM output invalid twice; fell back to response-model ranking")
             for e in shortlist["exp_id"][:k]]
+
+
+def predict_heldout(llm, hypotheses, heldout_info, outcome="synergy"):
+    """After a run: which never-tested (held-out) lines should respond to each mechanistic hypothesis.
+    heldout_info: {cell_line: genetics summary}. Only names and genetics are shown, never results.
+    Returns a list of HeldoutPrediction, or None after two failed attempts."""
+    mech = [h for h in hypotheses if h.level == "mechanistic" and getattr(h, "status", "open") != "dropped"]
+    if not mech:
+        return []
+    lines, want = set(heldout_info), {h.id for h in mech}
+    user = "\n\n".join([
+        HELDOUT_TASK.format(outcome=_describe(outcome)),
+        f"## Untested cell lines\n{_fmt_lines(heldout_info)}",
+        f"## Mechanistic hypotheses\n{_fmt_hypotheses([{k: v for k, v in h.model_dump().items() if k in ('id', 'statement', 'drugs', 'rationale', 'status')} for h in mech])}",
+    ])
+
+    def check(out):
+        got = [p.hypothesis_id for p in out.predictions]
+        problems = []
+        if sorted(got) != sorted(want):
+            problems.append(f"give exactly one prediction for each of {sorted(want)}; got {got}")
+        for p in out.predictions:
+            if bad := set(p.predicted_responders) - lines:
+                problems.append(f"{p.hypothesis_id}: not among the untested lines: {sorted(bad)}")
+        return problems
+
+    out = llm.call("predict_heldout", user, HeldoutPredictions, check)
+    return out.predictions if out else None

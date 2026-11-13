@@ -7,13 +7,12 @@ Read `notes/milestones.md` for milestones and the week-by-week task checklist. W
 ## Quick context
 - Question: can an LLM agent using literature evidence find strong cancer drug combinations in fewer experiments than random, uncertainty sampling, and Bayesian optimization? Do its mechanistic explanations predict which held-out cell lines respond?
 - Data: O'Neil 2016 screen (via DrugComb or TDC) used as a simulated lab. 250 experiments per method, batches of 10, at least 5 seeds.
-- Isaias owns `agent/`, literature retrieval, and `data/drug_annotations.csv`. Ryan owns `lab/` (data pipeline, simulated lab, response model, baselines).
+- Isaias owns everything as of Nov 13: `agent/`, literature retrieval, `data/drug_annotations.csv`, and the lab in `backup_lab/` (data pipeline, simulated lab, response model, baselines, evaluation). `backup_lab/` is the official lab; Ryan's `lab/` is not used. `LAB_SOURCE` defaults to `backup`.
 
 ## Working rules
 - Python 3.11 in `.venv`. Activate with `source .venv/bin/activate`.
 - Explain each step simply before doing it. Isaias wants plain-language explanations.
 - Commit after each finished task with a clear message.
-- Don't edit Ryan's folders without saying so first.
 - Never put API keys in code; read them from `.env`.
 - Never guess biomedical facts. Mark unknowns as "unknown" and note sources.
 - The agent must never see hidden results (see Leakage controls in the plan).
@@ -28,4 +27,6 @@ Read `notes/milestones.md` for milestones and the week-by-week task checklist. W
 - Done (Nov 9): hypothesis tracking, explanations, full LLM loop (`python -m agent.agent --chooser llm`), tested offline with a fake Claude.
 - Done (Nov 9): backup copy of Ryan's tasks in `backup_lab/` (real O'Neil data from DrugComb/Zenodo, SimLab, response model, baselines, curves). Switch with `LAB_SOURCE=backup|ryan|stub` in `.env` or `--lab`; results in `results/<source>/`.
 - Done (Nov 13): definitions locked with the research team: Loewe synergy (Bliss check), CSS inhibition, strong = joint cutoff ranked within each cell line (`backup_lab/thresholds.py`). Baselines rerun.
-- Next: first real run once the API key is set; swap in SimLab when Ryan pushes it; Sat/Sun checks in milestones.
+- Done (Nov 13): cell-line genetics (Cell Model Passports), joint target, shortlist_random control, ablations, held-out mechanism test, famous/obscure split, model check, BO tuning (kappa 1), final baselines (BO 47.2, shortlist_random 45.2, random 10.6 on the primary definition), sanity checks, cost estimate.
+- Pending decision: agent model for the budget (< $30). Leaning Sonnet 5.5, medium effort, trimmed literature; one run of each LLM arm.
+- Next: first real run once the API key is set; Sat/Sun checks in milestones.

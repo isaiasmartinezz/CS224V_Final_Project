@@ -1,4 +1,4 @@
-"""Discovery curves and summary table (backup copy of Ryan's experiments/compare.py, plan Section 9).
+"""Discovery curves and summary table (plan Section 9).
 
 For each run log: cumulative number of strong combinations found vs experiments run, mean ± std over seeds.
 "Strong" comes from backup_lab/thresholds.py and is looked up by exp_id from the lab's full
@@ -24,15 +24,17 @@ import matplotlib.pyplot as plt  # noqa: E402
 from agent.lab_source import SOURCES, get_source, make_lab, results_dir, truth_for  # noqa: E402
 from backup_lab.thresholds import DEFINITIONS, OUTCOMES, PRIMARY, strong_by_line, strong_labels  # noqa: E402
 
-PATTERN = re.compile(r"run_log_(?P<method>.+)_(?P<target>synergy|inhibition)_seed(?P<seed>\d+)\.csv")
+PATTERN = re.compile(r"run_log_(?P<method>.+)_(?P<target>synergy|inhibition|joint)_seed(?P<seed>\d+)\.csv")
 
 
-def load_runs(out_dir, definition):
+def load_runs(out_dir, definition, include=None):
     """{label: [log, ...]}; single-score definitions only use runs that optimized that score."""
     runs = {}
     for path in sorted(out_dir.glob("run_log_*.csv")):
         m = PATTERN.fullmatch(path.name)
         if not m or (definition in OUTCOMES and m["target"] != definition):
+            continue
+        if include and not re.fullmatch(include, f"{m['method']}:{m['target']}"):
             continue
         label = m["method"] if definition in OUTCOMES else f"{m['method']}:{m['target']}"
         runs.setdefault(label, []).append(pd.read_csv(path))
@@ -44,18 +46,23 @@ def main():
     p.add_argument("--definition", choices=DEFINITIONS, default=PRIMARY)
     p.add_argument("--quantile", type=float, default=0.95, help="single-score definitions only")
     p.add_argument("--lab", choices=SOURCES, default=None)
+    p.add_argument("--subdir", default="", help="e.g. tuning: keeps tuning runs apart from reported runs")
+    p.add_argument("--include", default=None, help="regex on 'method:target', e.g. '(random|bo):joint'")
+    p.add_argument("--name", default="", help="suffix for the output files")
     args = p.parse_args()
 
     source = get_source(args.lab)
     out_dir = results_dir(source)
+    out_dir = out_dir / args.subdir if args.subdir else out_dir
+    out_dir.mkdir(parents=True, exist_ok=True)
     truth = truth_for(make_lab(source))
     labels, info = strong_labels(truth, args.definition, args.quantile)
     sensitive = set(truth.groupby("cell_line")["inhibition"].mean().nlargest(5).index)
-    runs = load_runs(out_dir, args.definition)
+    runs = load_runs(out_dir, args.definition, args.include)
     if not runs:
         raise SystemExit(f"no run logs for {args.definition} in {out_dir}")
 
-    tag = args.definition + (f"_top{round((1 - args.quantile) * 100)}" if args.definition in OUTCOMES else "")
+    tag = args.definition + (f"_top{round((1 - args.quantile) * 100)}" if args.definition in OUTCOMES else "") + args.name
     rate = float(labels.mean())
     rows = []
     fig, ax = plt.subplots(figsize=(7.5, 4.8))
